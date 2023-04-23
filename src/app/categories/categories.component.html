@@ -14,11 +14,19 @@
                 <li class="list-group-item">{{category.waiting}} members waiting</li>
             </ul>
             <div class="card-body">
-                <button class="btn btn-primary" type="submit"><i class="bi bi-plus-lg"></i> Add to list</button>
+                <div class="btn-group">
+                    <button class="btn btn-primary" type="button" ngbPopover="Add a member to the waitlist"
+                        triggers="mouseenter:mouseleave"><i class="bi bi-plus-lg"></i> Add</button>
+                    <button class="btn btn-secondary" type="button" ngbPopover="View the waitlist"
+                    triggers="mouseenter:mouseleave"><i class="bi bi-eye"></i> View</button>
+                    <button class="btn btn-light" type="button" ngbPopover="Remove this category"
+                    triggers="mouseenter:mouseleave"><i class="bi bi-trash"></i> Delete</button>
+                </div>
             </div>
-            <div class="card-footer">
-                <a href="#" class="text-muted" style="text-decoration: none;"><i class="bi bi-pencil"></i> Edit category</a>
-            </div>
+            <!-- <div class="card-footer">
+                <a href="#" class="text-muted" style="text-decoration: none;"><i class="bi bi-pencil"></i> Edit
+                    category</a>
+            </div> -->
         </div>
     </div>
 </div>
