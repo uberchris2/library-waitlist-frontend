@@ -6,4 +6,5 @@ import { Component } from '@angular/core';
   styles: []
 })
 export class AppComponent {
+  isNavbarCollapsed = true;
 }
