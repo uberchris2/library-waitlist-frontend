@@ -1,3 +1,4 @@
+<h1 class="mb-3">Waitlist categories</h1>
 <div class="row">
     <div class="col-sm-4" *ngFor="let category of categories">
         <div class="card mb-3">
@@ -15,12 +16,13 @@
             </ul>
             <div class="card-body">
                 <div class="btn-group">
-                    <button class="btn btn-primary" type="button" ngbPopover="Add a member to the waitlist"
-                        triggers="mouseenter:mouseleave"><i class="bi bi-plus-lg"></i> Add</button>
+                    <button [routerLink]="'/add-wait'" class="btn btn-primary" type="button"
+                        ngbPopover="Add a member to the waitlist" triggers="mouseenter:mouseleave"><i
+                            class="bi bi-plus-lg"></i> Add</button>
                     <button class="btn btn-secondary" type="button" ngbPopover="View the waitlist"
-                    triggers="mouseenter:mouseleave"><i class="bi bi-eye"></i> View</button>
+                        triggers="mouseenter:mouseleave"><i class="bi bi-eye"></i> View</button>
                     <button class="btn btn-light" type="button" ngbPopover="Remove this category"
-                    triggers="mouseenter:mouseleave"><i class="bi bi-trash"></i> Delete</button>
+                        triggers="mouseenter:mouseleave"><i class="bi bi-trash"></i> Delete</button>
                 </div>
             </div>
             <!-- <div class="card-footer">
