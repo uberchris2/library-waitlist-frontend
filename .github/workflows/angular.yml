@@ -47,5 +47,5 @@ jobs:
           uses: 'google-github-actions/upload-cloud-storage@v1'
           with:
             path: 'deploy_dist/library-waitlist'
-            destination: 'library-app'
+            destination: 'waitlist-app'
             parent: false
