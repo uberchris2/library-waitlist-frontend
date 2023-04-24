@@ -1,0 +1,31 @@
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Category</th>
+        <th scope="col">Expiration Date</th>
+        <th scope="col"># Waiting</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Thomas Jefferson</td>
+        <td>t.jefferson@whitehouse.gov</td>
+        <td>Pressure Washer</td>
+        <td>4/23/23</td>
+        <td>3</td>
+        <td>
+            <div class="btn-group">
+                <button class="btn btn-danger" type="button"
+                    ngbPopover="Cancel this hold" triggers="mouseenter:mouseleave"><i class="bi bi-trash"></i></button>
+                <button class="btn btn-warning" type="button" ngbPopover="Cancel this hold, and view category waitlist"
+                    triggers="mouseenter:mouseleave"><i class="bi bi-recycle"></i></button>
+                <button class="btn btn-secondary" type="button" ngbPopover="Move to bottom of waitlist"
+                    triggers="mouseenter:mouseleave"><i class="bi bi-arrow-down"></i></button>
+            </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>

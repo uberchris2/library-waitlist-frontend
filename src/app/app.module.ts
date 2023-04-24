@@ -6,12 +6,16 @@ import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CategoriesComponent } from './categories/categories.component';
 import { AddWaitComponent } from './add-wait/add-wait.component';
+import { ExpiredHoldsComponent } from './expired-holds/expired-holds.component';
+import { ActivityComponent } from './activity/activity.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CategoriesComponent,
-    AddWaitComponent
+    AddWaitComponent,
+    ExpiredHoldsComponent,
+    ActivityComponent
   ],
   imports: [
     BrowserModule,
