@@ -4,10 +4,12 @@ import { CategoriesComponent } from './categories/categories.component';
 import { AddWaitComponent } from './add-wait/add-wait.component';
 import { ExpiredHoldsComponent } from './expired-holds/expired-holds.component';
 import { ActivityComponent } from './activity/activity.component';
+import { CategoryComponent } from './category/category.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/categories', pathMatch: 'full' },
   { path: 'categories', component: CategoriesComponent },
+  { path: 'category', component: CategoryComponent },
   { path: 'add-wait', component: AddWaitComponent },
   { path: 'expired-holds', component: ExpiredHoldsComponent },
   { path: 'activity', component: ActivityComponent }

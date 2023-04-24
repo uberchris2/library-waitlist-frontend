@@ -1,0 +1,49 @@
+<h1 class="mb-3"><a [routerLink]="'/categories'">Categories</a> / Pressure Washer</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Status</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Tool Number</th>
+            <th scope="col">Hold Expiration</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Holding</td>
+            <td>Thomas Jefferson</td>
+            <td>t.jefferson@whitehouse.gov</td>
+            <td></td>
+            <td>4/23/23</td>
+            <td>
+                <div class="btn-group">
+                    <button class="btn btn-success" type="button" ngbPopover="Picked up"
+                        triggers="mouseenter:mouseleave"><i class="bi bi-bag-check"></i></button>
+                    <button class="btn btn-danger" type="button" ngbPopover="Cancel this hold"
+                        triggers="mouseenter:mouseleave"><i class="bi bi-trash"></i></button>
+                    <button class="btn btn-secondary" type="button" ngbPopover="Move to bottom of waitlist"
+                        triggers="mouseenter:mouseleave"><i class="bi bi-arrow-down"></i></button>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Waiting</td>
+            <td>Michael Jordan</td>
+            <td>mj@chicagobulls.com</td>
+            <td>1234</td>
+            <td></td>
+            <td>
+                <div class="btn-group">
+                    <button class="btn btn-primary" type="button" ngbPopover="Start hold"
+                        triggers="mouseenter:mouseleave"><i class="bi bi-stopwatch"></i></button>
+                    <button class="btn btn-danger" type="button" ngbPopover="Cancel this wait"
+                        triggers="mouseenter:mouseleave"><i class="bi bi-trash"></i></button>
+                    <button class="btn btn-secondary" type="button" ngbPopover="Move to bottom of waitlist"
+                        triggers="mouseenter:mouseleave"><i class="bi bi-arrow-down"></i></button>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -8,6 +8,7 @@ import { CategoriesComponent } from './categories/categories.component';
 import { AddWaitComponent } from './add-wait/add-wait.component';
 import { ExpiredHoldsComponent } from './expired-holds/expired-holds.component';
 import { ActivityComponent } from './activity/activity.component';
+import { CategoryComponent } from './category/category.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { ActivityComponent } from './activity/activity.component';
     CategoriesComponent,
     AddWaitComponent,
     ExpiredHoldsComponent,
-    ActivityComponent
+    ActivityComponent,
+    CategoryComponent
   ],
   imports: [
     BrowserModule,
