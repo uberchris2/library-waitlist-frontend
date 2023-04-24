@@ -14,7 +14,7 @@
                 <li class="list-group-item">{{category.holding}} members holding</li>
                 <li class="list-group-item">{{category.waiting}} members waiting</li>
             </ul>
-            <div class="card-body">
+            <div class="card-footer">
                 <div class="btn-group">
                     <button [routerLink]="'/add-wait'" class="btn btn-primary" type="button"
                         ngbPopover="Add a member to the waitlist" triggers="mouseenter:mouseleave"><i
@@ -22,7 +22,7 @@
                     <button [routerLink]="'/category'" class="btn btn-secondary" type="button"
                         ngbPopover="View the waitlist" triggers="mouseenter:mouseleave"><i class="bi bi-eye"></i>
                         View</button>
-                    <button class="btn btn-light" type="button" ngbPopover="Remove this category"
+                    <button class="btn btn-dark" type="button" ngbPopover="Remove this category"
                         triggers="mouseenter:mouseleave"><i class="bi bi-trash"></i> Delete</button>
                 </div>
             </div>
