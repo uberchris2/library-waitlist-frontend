@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Category } from '../category';
-import { Firestore, collectionData, collection, addDoc, CollectionReference } from '@angular/fire/firestore';
-import { Observable, OperatorFunction, debounceTime, distinctUntilChanged, map } from 'rxjs';
+import { Firestore, collectionData, collection, addDoc, CollectionReference, docData, setDoc, doc, DocumentData } from '@angular/fire/firestore';
+import { Observable, OperatorFunction, debounceTime, distinctUntilChanged, first, map } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
@@ -51,7 +51,14 @@ export class AddWaitComponent {
 
   createWaitHold() {
     addDoc(this.waitHoldsCollection, this.waitHold).then(() => {
-      this.router.navigate(['category', this.waitHold.category])
+      const categoryReference = doc<DocumentData>(this.categoriesCollection, this.waitHold.category);
+      docData(categoryReference).pipe(first()).subscribe(cat => {
+        var updatedCategory = cat as Category;
+        updatedCategory.waiting = updatedCategory.waiting + 1;
+        setDoc(categoryReference, updatedCategory).then(() => {
+          this.router.navigate(['category', this.waitHold.category])
+        });
+      });
     });
   }
 

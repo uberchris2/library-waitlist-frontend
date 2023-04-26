@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Firestore, collectionData, collection, addDoc, CollectionReference, DocumentReference, doc, DocumentData, query, where, setDoc, docData } from '@angular/fire/firestore';
-import { EMPTY, Observable } from 'rxjs';
+import { EMPTY, Observable, first } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
 import { ActivatedRoute, ParamMap } from '@angular/router';
@@ -36,28 +36,39 @@ export class CategoryComponent {
 
   startHold(waitHold: WaitHold) {
     waitHold.status = "Holding";
-    this.updateHold(waitHold);
+    this.updateHold(waitHold, -1, 1);
   }
 
-  cancelHold(waitHold: WaitHold) {
+  cancelWaitHold(waitHold: WaitHold) {
+    const wasHold = waitHold.status == "Holding";
     waitHold.status = "Cancelled";
-    this.updateHold(waitHold);
+    this.updateHold(waitHold, wasHold ? 0 : -1, wasHold ? -1 : 0);
   }
 
   demoteHold(waitHold: WaitHold) {
     waitHold.status = "Waiting";
     waitHold.created = new Date();
-    this.updateHold(waitHold);
+    this.updateHold(waitHold, 1, -1);
   }
 
   pickupHold(waitHold: WaitHold) {
     waitHold.status = "Completed";
-    this.updateHold(waitHold);
+    this.updateHold(waitHold, 0, -1);
   }
 
-  private updateHold(waitHold: WaitHold) {
-    var waitHoldReference = doc<DocumentData>(this.waitHoldCollection, waitHold.id);
+  private updateHold(waitHold: WaitHold, waitIncrement: number, holdIncrement: number) {
+    const waitHoldReference = doc<DocumentData>(this.waitHoldCollection, waitHold.id);
     waitHold.updated = new Date();
-    setDoc(waitHoldReference, waitHold);
+    setDoc(waitHoldReference, waitHold).then(() => {
+      const categoryReference = doc<DocumentData>(this.categoriesCollection, waitHold.category);
+      docData(categoryReference).pipe(first()).subscribe(cat => {
+        var updatedCategory = cat as Category;
+        updatedCategory.holding = updatedCategory.holding + holdIncrement;
+        updatedCategory.waiting = updatedCategory.waiting + waitIncrement;
+        setDoc(categoryReference, updatedCategory);
+      });
+    });
+
+
   }
 }

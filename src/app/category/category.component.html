@@ -37,7 +37,7 @@
                     <button [routerLink]="'/edit-wait/' + waitHold.id" class="btn btn-secondary" type="button"
                         ngbPopover="Edit this hold/waitlist entry" triggers="mouseenter:mouseleave"><i
                             class="bi bi-pencil"></i></button>
-                    <button (click)="cancelHold(waitHold)" class="btn btn-danger" type="button"
+                    <button (click)="cancelWaitHold(waitHold)" class="btn btn-danger" type="button"
                         ngbPopover="Cancel this hold/waitlist entry" triggers="mouseenter:mouseleave"><i
                             class="bi bi-trash"></i></button>
                     <button (click)="demoteHold(waitHold)" *ngIf="waitHold.status == 'Holding'"
