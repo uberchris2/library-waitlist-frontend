@@ -3,7 +3,7 @@
         <h1 class="mb-3"><a [routerLink]="'/categories'">Categories</a> / {{categoryId}}</h1>
     </div>
     <div class="col text-end">
-        <button [routerLink]="'/add-wait/' + categoryId" class="btn btn-primary" type="button"
+        <button [routerLink]="'/add-wait/' + categoryId" class="btn btn-success" type="button"
             ngbPopover="Add a member to the waitlist" triggers="mouseenter:mouseleave"><i class="bi bi-plus-lg"></i>
             Add</button>
     </div>
@@ -30,10 +30,10 @@
             <td>{{waitHold.holdExpiration | date}}</td>
             <td>
                 <div class="btn-group">
-                    <button *ngIf="waitHold.status == 'Waiting'" (click)="startHold(waitHold)" class="btn btn-success"
+                    <button *ngIf="waitHold.status == 'Waiting'" (click)="startHold(waitHold)" class="btn btn-primary"
                         type="button" ngbPopover="Start hold" triggers="mouseenter:mouseleave"><i
                             class="bi bi-stopwatch"></i></button>
-                    <button *ngIf="waitHold.status == 'Holding'" (click)="pickupHold(waitHold)" class="btn btn-success"
+                    <button *ngIf="waitHold.status == 'Holding'" (click)="pickupHold(waitHold)" class="btn btn-primary"
                         type="button" ngbPopover="Picked up" triggers="mouseenter:mouseleave"><i
                             class="bi bi-bag-check"></i></button>
                     <button [routerLink]="'/edit-wait/' + waitHold.id" class="btn btn-secondary" type="button"
@@ -43,7 +43,7 @@
                         ngbPopover="Cancel this hold/waitlist entry" triggers="mouseenter:mouseleave"><i
                             class="bi bi-trash"></i></button>
                     <button (click)="demoteHold(waitHold)" *ngIf="waitHold.status == 'Holding'"
-                        class="btn btn-secondary" type="button" ngbPopover="Move to bottom of waitlist"
+                        class="btn btn-warning" type="button" ngbPopover="Move to bottom of waitlist"
                         triggers="mouseenter:mouseleave"><i class="bi bi-arrow-down"></i></button>
                 </div>
             </td>
