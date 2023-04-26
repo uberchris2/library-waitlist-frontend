@@ -1,5 +1,5 @@
 <h1 class="mb-3">Expired holds</h1>
-<table class="table">
+<table *ngIf="(expiredHold$ | async)?.length" class="table">
   <thead>
     <tr>
       <th scope="col">Name</th>
@@ -27,14 +27,15 @@
       </td>
       <td>
         <div class="btn-group">
-          <button class="btn btn-danger" type="button" ngbPopover="Cancel this hold" triggers="mouseenter:mouseleave"><i
+          <button (click)="cancelHold(expiredHold, false)" class="btn btn-danger" type="button" ngbPopover="Cancel this hold" triggers="mouseenter:mouseleave"><i
               class="bi bi-trash"></i></button>
-          <button class="btn btn-warning" type="button" ngbPopover="Cancel this hold, and view category waitlist"
+          <button (click)="cancelHold(expiredHold, true)" class="btn btn-warning" type="button" ngbPopover="Cancel this hold, and view category waitlist"
             triggers="mouseenter:mouseleave"><i class="bi bi-recycle"></i></button>
-          <button class="btn btn-secondary" type="button" ngbPopover="Move to bottom of waitlist"
+          <button (click)="demoteHold(expiredHold)" class="btn btn-secondary" type="button" ngbPopover="Move to bottom of waitlist"
             triggers="mouseenter:mouseleave"><i class="bi bi-arrow-down"></i></button>
         </div>
       </td>
     </tr>
   </tbody>
 </table>
+<div *ngIf="(expiredHold$ | async)?.length == 0" class="text-center">There are currently no expired holds.</div>

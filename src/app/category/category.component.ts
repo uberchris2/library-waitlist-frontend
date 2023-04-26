@@ -7,6 +7,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Category } from '../category';
 import { RxHelpers } from '../rx-helpers';
 import { DateHelpers } from '../date-helpers';
+import { HoldHelpers } from '../hold-helpers';
 
 @Component({
   selector: 'app-category',
@@ -48,40 +49,26 @@ export class CategoryComponent {
   startHold(waitHold: WaitHold) {
     waitHold.status = "Holding";
     waitHold.holdExpiration = DateHelpers.getExpirationDate();
-    this.updateHold(waitHold, -1, 1);
+    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold, -1, 1);
   }
 
   cancelWaitHold(waitHold: WaitHold) {
     const wasHold = waitHold.status == "Holding";
     waitHold.status = "Cancelled";
-    this.updateHold(waitHold, wasHold ? 0 : -1, wasHold ? -1 : 0);
+    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold, wasHold ? 0 : -1, wasHold ? -1 : 0);
   }
 
   demoteHold(waitHold: WaitHold) {
     waitHold.status = "Waiting";
     waitHold.created = new Date();
     waitHold.holdExpiration = null;
-    this.updateHold(waitHold, 1, -1);
+    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold, 1, -1);
   }
 
   pickupHold(waitHold: WaitHold) {
     waitHold.status = "Completed";
-    this.updateHold(waitHold, 0, -1);
+    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold, 0, -1);
   }
 
-  private updateHold(waitHold: WaitHold, waitIncrement: number, holdIncrement: number) {
-    const waitHoldReference = doc<DocumentData>(this.waitHoldCollection, waitHold.id);
-    waitHold.updated = new Date();
-    setDoc(waitHoldReference, waitHold).then(() => {
-      const categoryReference = doc<DocumentData>(this.categoriesCollection, waitHold.category);
-      docData(categoryReference).pipe(first()).subscribe(cat => {
-        var updatedCategory = cat as Category;
-        updatedCategory.holding = updatedCategory.holding + holdIncrement;
-        updatedCategory.waiting = updatedCategory.waiting + waitIncrement;
-        setDoc(categoryReference, updatedCategory);
-      });
-    });
-
-
-  }
+  
 }

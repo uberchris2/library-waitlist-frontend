@@ -3,8 +3,9 @@ import { Firestore, collectionData, collection, CollectionReference, query, wher
 import { Observable, map } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RxHelpers } from '../rx-helpers';
+import { HoldHelpers } from '../hold-helpers';
 
 @Component({
   selector: 'app-expired-holds',
@@ -14,10 +15,12 @@ import { RxHelpers } from '../rx-helpers';
 export class ExpiredHoldsComponent {
   expiredHold$: Observable<WaitHold[]>;
   waitHoldCollection: CollectionReference;
+  categoriesCollection: CollectionReference;
   waitlistLengthByCategory$: Observable<any>;
 
-  constructor(private firestore: Firestore, private modalService: NgbModal, private route: ActivatedRoute) {
+  constructor(private firestore: Firestore, private modalService: NgbModal, private route: ActivatedRoute, private router: Router) {
     this.waitHoldCollection = collection(firestore, 'wait-holds');
+    this.categoriesCollection = collection(firestore, 'categories');
     const today = new Date();
     const whQuery = query(this.waitHoldCollection, where("status", "in", ["Waiting", "Holding"]));
     var waitHolds = (collectionData(whQuery, { idField: "id" }) as Observable<WaitHold[]>);
@@ -38,6 +41,22 @@ export class ExpiredHoldsComponent {
         return prev;
       }, {}))
     );
+  }
+
+  cancelHold(waitHold: WaitHold, routeAfterward: boolean) {
+    waitHold.status = "Cancelled";
+    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold, 0, -1).then(() => {
+      if (routeAfterward) {
+        this.router.navigate(['category', waitHold.category]);
+      }
+    })
+  }
+
+  demoteHold(waitHold: WaitHold) {
+    waitHold.status = "Waiting";
+    waitHold.created = new Date();
+    waitHold.holdExpiration = null;
+    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold, 1, -1);
   }
 }
 
