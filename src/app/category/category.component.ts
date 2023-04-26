@@ -31,26 +31,26 @@ export class CategoryComponent {
 
   startHold(waitHold: WaitHold) {
     waitHold.status = "Holding";
-    this.editHold(waitHold);
+    this.updateHold(waitHold);
   }
 
   cancelHold(waitHold: WaitHold) {
     waitHold.status = "Cancelled";
-    this.editHold(waitHold);
+    this.updateHold(waitHold);
   }
 
   demoteHold(waitHold: WaitHold) {
     waitHold.status = "Waiting";
     waitHold.created = new Date();
-    this.editHold(waitHold);
+    this.updateHold(waitHold);
   }
 
   pickupHold(waitHold: WaitHold) {
     waitHold.status = "Completed";
-    this.editHold(waitHold);
+    this.updateHold(waitHold);
   }
 
-  private editHold(waitHold: WaitHold) {
+  private updateHold(waitHold: WaitHold) {
     var waitHoldReference = doc<DocumentData>(this.waitHoldCollection, waitHold.id);
     waitHold.updated = new Date();
     setDoc(waitHoldReference, waitHold);

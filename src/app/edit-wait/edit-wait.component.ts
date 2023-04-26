@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
 import { Category } from '../category';
-import { Firestore, collectionData, collection, addDoc, CollectionReference } from '@angular/fire/firestore';
+import { Firestore, collectionData, collection, addDoc, CollectionReference, doc, DocumentData, docData, DocumentReference, setDoc } from '@angular/fire/firestore';
 import { Observable, OperatorFunction, debounceTime, distinctUntilChanged, map } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-add-wait',
-  templateUrl: './add-wait.component.html',
-  styleUrls: ['./add-wait.component.css']
+  selector: 'app-edit-wait',
+  templateUrl: './edit-wait.component.html',
+  styleUrls: ['./edit-wait.component.css']
 })
-export class AddWaitComponent {
+export class EditWaitComponent {
   public waitHold: WaitHold = {
     category: "",
     created: new Date(),
@@ -42,15 +42,13 @@ export class AddWaitComponent {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
-      var categoryNameParam = params.get('categoryName');
-      if (categoryNameParam != null) {
-        this.waitHold.category = categoryNameParam;
-      }
+      var waitHoldId = String(params.get('waitHoldId'));
+      docData(doc<DocumentData>(this.waitHoldsCollection, waitHoldId)).subscribe(wh => this.waitHold = wh as WaitHold);
     });
   }
 
-  createWaitHold() {
-    addDoc(this.waitHoldsCollection, this.waitHold).then(() => {
+  updateWaitHold() {
+    setDoc(doc<DocumentData>(this.waitHoldsCollection, this.waitHold.id), this.waitHold).then(() => {
       this.router.navigate(['category', this.waitHold.category])
     });
   }

@@ -13,6 +13,7 @@ import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideAuth,getAuth } from '@angular/fire/auth';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
+import { EditWaitComponent } from './edit-wait/edit-wait.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
     AddWaitComponent,
     ExpiredHoldsComponent,
     ActivityComponent,
-    CategoryComponent
+    CategoryComponent,
+    EditWaitComponent
   ],
   imports: [
     BrowserModule,

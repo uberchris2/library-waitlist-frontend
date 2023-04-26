@@ -1,0 +1,26 @@
+<h1>Edit waitlist entry</h1>
+<div class="row">
+    <div class="col-lg-6">
+        <form>
+            <div class="form-group mt-3">
+                <label for="nameInput">Member name</label>
+                <input type="text" class="form-control" id="nameInput" name="nameInput" [(ngModel)]="waitHold.name"
+                    [ngbTypeahead]="search" placeholder="Joe Pesci" />
+            </div>
+            <div class="form-group mt-3">
+                <label for="emailInput">Email address</label>
+                <input type="email" class="form-control" id="emailInput" name="emailInput" [(ngModel)]="waitHold.email"
+                    placeholder="name@example.com">
+            </div>
+            <div class="form-group mt-3">
+                <label for="toolInput">Tool number <span class="text-muted">(leave blank for next
+                        available)</span></label>
+                <input type="text" class="form-control" id="toolInput" name="toolInput" [(ngModel)]="waitHold.tool"
+                    placeholder="1234">
+            </div>
+            <div class="mt-3">
+                <button (click)="updateWaitHold()" type="button" class="btn btn-primary me-1">Save</button>
+                <button [routerLink]="'/category/' + waitHold.category" type="button" class="btn btn-secondary">Cancel</button>
+            </div>
+        </form>
+    </div>

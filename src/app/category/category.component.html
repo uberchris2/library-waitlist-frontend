@@ -31,16 +31,18 @@
                     <button *ngIf="waitHold.status == 'Waiting'" (click)="startHold(waitHold)" class="btn btn-success"
                         type="button" ngbPopover="Start hold" triggers="mouseenter:mouseleave"><i
                             class="bi bi-stopwatch"></i></button>
-                    <button *ngIf="waitHold.status == 'Holding'" (click)="pickupHold(waitHold)" class="btn btn-success" type="button"
-                        ngbPopover="Picked up" triggers="mouseenter:mouseleave"><i class="bi bi-bag-check"></i></button>
-                    <button class="btn btn-secondary" type="button" ngbPopover="Edit this hold/waitlist entry"
-                        triggers="mouseenter:mouseleave"><i class="bi bi-pencil"></i></button>
+                    <button *ngIf="waitHold.status == 'Holding'" (click)="pickupHold(waitHold)" class="btn btn-success"
+                        type="button" ngbPopover="Picked up" triggers="mouseenter:mouseleave"><i
+                            class="bi bi-bag-check"></i></button>
+                    <button [routerLink]="'/edit-wait/' + waitHold.id" class="btn btn-secondary" type="button"
+                        ngbPopover="Edit this hold/waitlist entry" triggers="mouseenter:mouseleave"><i
+                            class="bi bi-pencil"></i></button>
                     <button (click)="cancelHold(waitHold)" class="btn btn-danger" type="button"
                         ngbPopover="Cancel this hold/waitlist entry" triggers="mouseenter:mouseleave"><i
                             class="bi bi-trash"></i></button>
-                    <button (click)="demoteHold(waitHold)" *ngIf="waitHold.status == 'Holding'" class="btn btn-secondary" type="button"
-                        ngbPopover="Move to bottom of waitlist" triggers="mouseenter:mouseleave"><i
-                            class="bi bi-arrow-down"></i></button>
+                    <button (click)="demoteHold(waitHold)" *ngIf="waitHold.status == 'Holding'"
+                        class="btn btn-secondary" type="button" ngbPopover="Move to bottom of waitlist"
+                        triggers="mouseenter:mouseleave"><i class="bi bi-arrow-down"></i></button>
                 </div>
             </td>
         </tr>
