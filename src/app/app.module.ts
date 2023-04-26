@@ -9,6 +9,10 @@ import { AddWaitComponent } from './add-wait/add-wait.component';
 import { ExpiredHoldsComponent } from './expired-holds/expired-holds.component';
 import { ActivityComponent } from './activity/activity.component';
 import { CategoryComponent } from './category/category.component';
+import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
+import { environment } from '../environments/environment';
+import { provideAuth,getAuth } from '@angular/fire/auth';
+import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 
 @NgModule({
   declarations: [
@@ -23,7 +27,10 @@ import { CategoryComponent } from './category/category.component';
     BrowserModule,
     AppRoutingModule,
     NgbModule,
-    FormsModule
+    FormsModule,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore())
   ],
   providers: [],
   bootstrap: [AppComponent]

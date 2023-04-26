@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "waitlist-firebase": {
+      "hosting": {
+        "library-waitlist": [
+          "waitlist-firebase"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "waitlist-firebase"
+  }
+}
