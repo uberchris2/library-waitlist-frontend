@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { Category } from '../category';
-import { Firestore, collectionData, collection, addDoc, CollectionReference, DocumentReference, query, queryEqual, documentId, docData, doc, DocumentData } from '@angular/fire/firestore';
+import { Firestore, collectionData, collection, addDoc, CollectionReference, DocumentReference, doc, DocumentData } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { deleteDoc } from '@angular/fire/firestore';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-categories',
@@ -14,9 +15,9 @@ export class CategoriesComponent {
   categoriesCollection: CollectionReference;
   newCategoryName = "";
 
-  constructor(private firestore: Firestore) {
+  constructor(private firestore: Firestore, private modalService: NgbModal) {
     this.categoriesCollection = collection(firestore, 'categories');
-    this.category$ = collectionData(this.categoriesCollection, {idField: "id"}) as Observable<Category[]>;
+    this.category$ = collectionData(this.categoriesCollection, { idField: "id" }) as Observable<Category[]>;
   }
 
   createCategory() {
@@ -26,8 +27,10 @@ export class CategoriesComponent {
       });
   }
 
-  deleteCategory(category: Category) {
-    var categoryReference = doc<DocumentData>(this.categoriesCollection, category.id);
-    deleteDoc(categoryReference);
+  deleteCategory(category: Category, deleteCategoryConfirm: any) {
+    this.modalService.open(deleteCategoryConfirm).result.then(() => {
+      var categoryReference = doc<DocumentData>(this.categoriesCollection, category.id);
+      deleteDoc(categoryReference);
+    });
   }
 }

@@ -22,8 +22,9 @@
                     <button [routerLink]="'/category'" class="btn btn-secondary" type="button"
                         ngbPopover="View the waitlist" triggers="mouseenter:mouseleave"><i class="bi bi-eye"></i>
                         View</button>
-                    <button (click)="deleteCategory(category)" class="btn btn-dark" type="button" ngbPopover="Remove this category"
-                        triggers="mouseenter:mouseleave"><i class="bi bi-trash"></i> Delete</button>
+                    <button (click)="deleteCategory(category, deleteCategoryConfirm)" class="btn btn-dark" type="button"
+                        ngbPopover="Remove this category" triggers="mouseenter:mouseleave"><i class="bi bi-trash"></i>
+                        Delete</button>
                 </div>
             </div>
             <!-- <div class="card-footer">
@@ -34,11 +35,33 @@
     </div>
     <div class="col-sm-4">
         <div class="card mb-3">
-            <input type="text" [(ngModel)]="newCategoryName" class="form-control card-header" id="nameInput" placeholder="New category name...">
+            <input type="text" [(ngModel)]="newCategoryName" class="form-control card-header" id="nameInput"
+                placeholder="New category name...">
             <div class="card-body text-center">
-                <button [disabled]="newCategoryName.length == 0" (click)="createCategory()" class="btn btn-light" type="button" ngbPopover="Create new category"
-                    triggers="mouseenter:mouseleave"><i class="bi bi-plus-lg"></i> Create</button>
+                <button [disabled]="newCategoryName.length == 0" (click)="createCategory()" class="btn btn-light"
+                    type="button" ngbPopover="Create new category" triggers="mouseenter:mouseleave"><i
+                        class="bi bi-plus-lg"></i> Create</button>
             </div>
         </div>
     </div>
 </div>
+
+<ng-template #deleteCategoryConfirm let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-title">Category deletion</h4>
+        <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+        <p>
+            <strong>Are you sure you want to delete this category?</strong>
+        </p>
+        <p>
+            All holds and waitlist entries for this category will be cancelled.
+            <span class="text-danger">This operation can not be undone.</span>
+        </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss()">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="modal.close()">Ok</button>
+    </div>
+</ng-template>
