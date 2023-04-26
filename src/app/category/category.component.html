@@ -11,39 +11,22 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>Holding</td>
-            <td>Thomas Jefferson</td>
-            <td>t.jefferson@whitehouse.gov</td>
-            <td></td>
-            <td>4/23/23</td>
+        <tr *ngFor="let waitHold of waitHold$ | async">
+            <td>{{waitHold.status}}</td>
+            <td>{{waitHold.name}}</td>
+            <td>{{waitHold.email}}</td>
+            <td>{{waitHold.tool}}</td>
+            <td>{{waitHold.holdExpiration}}</td>
             <td>
                 <div class="btn-group">
-                    <button class="btn btn-success" type="button" ngbPopover="Picked up"
+                    <button *ngIf="waitHold.status == 'Holding'" class="btn btn-success" type="button" ngbPopover="Picked up"
                         triggers="mouseenter:mouseleave"><i class="bi bi-bag-check"></i></button>
-                        <button class="btn btn-secondary" type="button" ngbPopover="Edit this hold"
-                            triggers="mouseenter:mouseleave"><i class="bi bi-pencil"></i></button>
-                    <button class="btn btn-danger" type="button" ngbPopover="Cancel this hold"
+                    <button class="btn btn-secondary" type="button" ngbPopover="Edit this hold/waitlist entry"
+                        triggers="mouseenter:mouseleave"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-danger" type="button" ngbPopover="Cancel this hold/waitlist entry"
                         triggers="mouseenter:mouseleave"><i class="bi bi-trash"></i></button>
-                    <button class="btn btn-secondary" type="button" ngbPopover="Move to bottom of waitlist"
+                    <button *ngIf="waitHold.status == 'Holding'" class="btn btn-secondary" type="button" ngbPopover="Move to bottom of waitlist"
                         triggers="mouseenter:mouseleave"><i class="bi bi-arrow-down"></i></button>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>Waiting</td>
-            <td>Michael Jordan</td>
-            <td>mj@chicagobulls.com</td>
-            <td>1234</td>
-            <td></td>
-            <td>
-                <div class="btn-group">
-                    <button class="btn btn-primary" type="button" ngbPopover="Start hold"
-                        triggers="mouseenter:mouseleave"><i class="bi bi-stopwatch"></i></button>
-                        <button class="btn btn-secondary" type="button" ngbPopover="Edit waitlist entry"
-                            triggers="mouseenter:mouseleave"><i class="bi bi-pencil"></i></button>
-                    <button class="btn btn-danger" type="button" ngbPopover="Cancel this waitlist entry"
-                        triggers="mouseenter:mouseleave"><i class="bi bi-trash"></i></button>
                 </div>
             </td>
         </tr>

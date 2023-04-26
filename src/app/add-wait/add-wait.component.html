@@ -3,29 +3,28 @@
     <div class="col-lg-6">
         <form>
             <div class="form-group mt-3">
-                <label for="exampleFormControlSelect1">Tool category</label>
-                <select class="form-select" id="exampleFormControlSelect1">
-                    <option>Pressure washer</option>
-                    <option>Carpet cleaner</option>
-                    <option>Roto tiller</option>
-                    <option>Roto hammer</option>
-                    <option>Other</option>
+                <label for="categorySelect">Tool category</label>
+                <select class="form-select" id="categorySelect" name="categorySelect" [(ngModel)]="waitHold.category">
+                    <option *ngFor="let category of category$ | async">{{category.name}}</option>
                 </select>
             </div>
             <div class="form-group mt-3">
                 <label for="nameInput">Member name</label>
-                <input type="text" class="form-control" id="nameInput" [(ngModel)]="model" [ngbTypeahead]="search" placeholder="Joe Pesci" />
+                <input type="text" class="form-control" id="nameInput" name="nameInput" [(ngModel)]="waitHold.name" [ngbTypeahead]="search"
+                    placeholder="Joe Pesci" />
             </div>
             <div class="form-group mt-3">
                 <label for="emailInput">Email address</label>
-                <input type="email" class="form-control" id="emailInput" placeholder="name@example.com">
+                <input type="email" class="form-control" id="emailInput" name="emailInput" [(ngModel)]="waitHold.email"
+                    placeholder="name@example.com">
             </div>
             <div class="form-group mt-3">
-                <label for="specificInput">Tool number <span class="text-muted">(leave blank for next available)</span></label>
-                <input type="text" class="form-control" id="specificInput" placeholder="1234">
+                <label for="toolInput">Tool number <span class="text-muted">(leave blank for next
+                        available)</span></label>
+                <input type="text" class="form-control" id="toolInput" name="toolInput" [(ngModel)]="waitHold.tool" placeholder="1234">
             </div>
             <div class="mt-3">
-                <button [routerLink]="'/category'" type="button" class="btn btn-primary me-1">Add</button>
+                <button (click)="createWaitHold()" type="button" class="btn btn-primary me-1">Add</button>
                 <button [routerLink]="'/'" type="button" class="btn btn-secondary">Cancel</button>
             </div>
         </form>
