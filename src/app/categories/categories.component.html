@@ -16,10 +16,10 @@
             </ul>
             <div class="card-footer">
                 <div class="btn-group">
-                    <button [routerLink]="'/add-wait/' + category.name" class="btn btn-primary" type="button"
+                    <button [routerLink]="'/add-wait/' + category.id" class="btn btn-primary" type="button"
                         ngbPopover="Add a member to the waitlist" triggers="mouseenter:mouseleave"><i
                             class="bi bi-plus-lg"></i> Add</button>
-                    <button [routerLink]="'/category/' + category.name" class="btn btn-secondary" type="button"
+                    <button [routerLink]="'/category/' + category.id" class="btn btn-secondary" type="button"
                         ngbPopover="View the waitlist" triggers="mouseenter:mouseleave"><i class="bi bi-eye"></i>
                         View</button>
                     <button (click)="deleteCategory(category, deleteCategoryConfirm)" class="btn btn-dark" type="button"

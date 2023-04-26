@@ -42,9 +42,9 @@ export class AddWaitComponent {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
-      var categoryNameParam = params.get('categoryName');
-      if (categoryNameParam != null) {
-        this.waitHold.category = categoryNameParam;
+      var categoryIdParam = params.get('categoryId');
+      if (categoryIdParam != null) {
+        this.waitHold.category = categoryIdParam;
       }
     });
   }

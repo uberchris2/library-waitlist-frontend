@@ -3,7 +3,7 @@
         <h1 class="mb-3"><a [routerLink]="'/categories'">Categories</a> / {{categoryName}}</h1>
     </div>
     <div class="col text-end">
-        <button [routerLink]="'/add-wait/' + categoryName" class="btn btn-primary" type="button"
+        <button [routerLink]="'/add-wait/' + categoryId" class="btn btn-primary" type="button"
             ngbPopover="Add a member to the waitlist" triggers="mouseenter:mouseleave"><i class="bi bi-plus-lg"></i>
             Add</button>
     </div>

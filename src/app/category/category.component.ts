@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { Firestore, collectionData, collection, addDoc, CollectionReference, DocumentReference, doc, DocumentData, query, where, setDoc } from '@angular/fire/firestore';
+import { Firestore, collectionData, collection, addDoc, CollectionReference, DocumentReference, doc, DocumentData, query, where, setDoc, docData } from '@angular/fire/firestore';
 import { EMPTY, Observable } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Category } from '../category';
 
 @Component({
   selector: 'app-category',
@@ -13,17 +14,21 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 export class CategoryComponent {
   waitHold$: Observable<WaitHold[]> = EMPTY;
   waitHoldCollection: CollectionReference;
+  categoriesCollection: CollectionReference;
+  categoryId = "";
   categoryName = "";
 
   constructor(private firestore: Firestore, private modalService: NgbModal, private route: ActivatedRoute) {
     this.waitHoldCollection = collection(firestore, 'wait-holds');
+    this.categoriesCollection = collection(firestore, 'categories');
   }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
-      this.categoryName = String(params.get('categoryName'));
+      this.categoryId = String(params.get('categoryId'));
+      docData(doc<DocumentData>(this.categoriesCollection, this.categoryId)).subscribe(cat => this.categoryName = (cat as Category).name);
       const whQuery = query(this.waitHoldCollection,
-        where("category", "==", this.categoryName),
+        where("category", "==", this.categoryId),
         where("status", "in", ["Waiting", "Holding"]))
       this.waitHold$ = collectionData(whQuery, { idField: "id" }) as Observable<WaitHold[]>;
     });

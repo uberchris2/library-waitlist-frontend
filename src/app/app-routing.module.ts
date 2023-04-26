@@ -10,9 +10,9 @@ import { EditWaitComponent } from './edit-wait/edit-wait.component';
 const routes: Routes = [
   { path: '', redirectTo: '/categories', pathMatch: 'full' },
   { path: 'categories', component: CategoriesComponent },
-  { path: 'category/:categoryName', component: CategoryComponent },
+  { path: 'category/:categoryId', component: CategoryComponent },
   { path: 'add-wait', component: AddWaitComponent },
-  { path: 'add-wait/:categoryName', component: AddWaitComponent },
+  { path: 'add-wait/:categoryId', component: AddWaitComponent },
   { path: 'edit-wait/:waitHoldId', component: EditWaitComponent },
   { path: 'expired-holds', component: ExpiredHoldsComponent },
   { path: 'activity', component: ActivityComponent }

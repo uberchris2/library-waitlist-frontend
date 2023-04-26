@@ -5,7 +5,7 @@
             <div class="form-group mt-3">
                 <label for="categorySelect">Tool category</label>
                 <select class="form-select" id="categorySelect" name="categorySelect" [(ngModel)]="waitHold.category">
-                    <option *ngFor="let category of category$ | async" [ngValue]="category.name">{{category.name}}</option>
+                    <option *ngFor="let category of category$ | async" [ngValue]="category.id">{{category.name}}</option>
                 </select>
             </div>
             <div class="form-group mt-3">
