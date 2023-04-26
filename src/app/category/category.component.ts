@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Firestore, collectionData, collection, addDoc, CollectionReference, DocumentReference, doc, DocumentData, query, where, setDoc, docData } from '@angular/fire/firestore';
+import { Firestore, collectionData, collection, CollectionReference, doc, DocumentData, query, where, setDoc, docData } from '@angular/fire/firestore';
 import { EMPTY, Observable, first } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
