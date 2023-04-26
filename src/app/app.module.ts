@@ -14,6 +14,8 @@ import { environment } from '../environments/environment';
 import { provideAuth,getAuth } from '@angular/fire/auth';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { EditWaitComponent } from './edit-wait/edit-wait.component';
+import { UpdateUsersComponent } from './update-users/update-users.component';
+import { NgxCsvParserModule } from 'ngx-csv-parser';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,8 @@ import { EditWaitComponent } from './edit-wait/edit-wait.component';
     ExpiredHoldsComponent,
     ActivityComponent,
     CategoryComponent,
-    EditWaitComponent
+    EditWaitComponent,
+    UpdateUsersComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +35,8 @@ import { EditWaitComponent } from './edit-wait/edit-wait.component';
     FormsModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore())
+    provideFirestore(() => getFirestore()),
+    NgxCsvParserModule
   ],
   providers: [],
   bootstrap: [AppComponent]

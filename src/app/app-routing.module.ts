@@ -6,6 +6,7 @@ import { ExpiredHoldsComponent } from './expired-holds/expired-holds.component';
 import { ActivityComponent } from './activity/activity.component';
 import { CategoryComponent } from './category/category.component';
 import { EditWaitComponent } from './edit-wait/edit-wait.component';
+import { UpdateUsersComponent } from './update-users/update-users.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/categories', pathMatch: 'full' },
@@ -15,7 +16,8 @@ const routes: Routes = [
   { path: 'add-wait/:categoryId', component: AddWaitComponent },
   { path: 'edit-wait/:waitHoldId', component: EditWaitComponent },
   { path: 'expired-holds', component: ExpiredHoldsComponent },
-  { path: 'activity', component: ActivityComponent }
+  { path: 'activity', component: ActivityComponent },
+  { path: 'update-users', component: UpdateUsersComponent }
 ];
 
 @NgModule({

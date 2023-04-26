@@ -1,0 +1,10 @@
+<h1 class="mb-3">Update user list</h1>
+<p>The list of users can be updated here. To perform a user update:</p>
+<ul>
+    <li>Visit the MyTurn site as an administrator</li>
+    <li>Export the user list as CSV with the following fields: First Name, Last Name, Email</li>
+    <li>Import the downloaded file here:</li>
+</ul>
+<input type="file" class="form-control mb-3"  id="fileInput" name="fileInput" accept=".csv" (change)="handleFileInput($event.target)" />
+<button (click)="updateUsers()" type="button" class="btn btn-success mb-3" [disabled]="!fileToUpload || progress != 0">Import</button>
+<ngb-progressbar type="primary" *ngIf="progress != 0" [value]="progress" height="2rem">{{currentState}}</ngb-progressbar>
