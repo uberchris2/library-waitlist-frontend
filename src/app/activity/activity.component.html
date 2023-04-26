@@ -1,40 +1,29 @@
 <h1>Waitlist activity</h1>
-<p class="mb-3"><em>From the past 30 days</em></p>
+<p class="mb-3"><em>Last 50 updated entries</em></p>
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">Date</th>
+            <th scope="col">Updated</th>
+            <th scope="col">Created</th>
+            <th scope="col">Category</th>
+            <th scope="col">Current Status</th>
             <th scope="col">Name</th>
             <th scope="col">Email</th>
-            <th scope="col">Category</th>
-            <th scope="col">Tool Number</th>
-            <th scope="col">Action</th>
+            <th scope="col">Tool</th>
+            <th scope="col">Hold Expiration</th>
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>4/23/23</td>
-            <td>Thomas Jefferson</td>
-            <td>t.jefferson@whitehouse.gov</td>
-            <td>Pressure Washer</td>
-            <td>1234</td>
-            <td>Added to waitlist</td>
+        <tr *ngFor="let waitHold of waitHold$ | async">
+            <td>{{waitHold.updated | date:'medium'}}</td>
+            <td>{{waitHold.created | date}}</td>
+            <td>{{waitHold.category}}</td>
+            <td>{{waitHold.status}}</td>
+            <td>{{waitHold.name}}</td>
+            <td>{{waitHold.email}}</td>
+            <td>{{waitHold.tool}}</td>
+            <td>{{waitHold.holdExpiration | date}}</td>
         </tr>
-        <tr>
-            <td>4/23/23</td>
-            <td>James T Kirk</td>
-            <td>jameskirk@enterprise.uss</td>
-            <td>Carpet Cleaner</td>
-            <td></td>
-            <td>Started holding</td>
-        </tr>
-        <tr>
-            <td>4/22/23</td>
-            <td>Frank Sinatra</td>
-            <td>fs@gmail.com</td>
-            <td>Pressure Washer</td>
-            <td>4567</td>
-            <td>Hold expired</td>
-        </tr>
+
     </tbody>
 </table>
