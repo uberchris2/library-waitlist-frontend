@@ -4,7 +4,7 @@ import { Firestore, collectionData, collection, addDoc, CollectionReference } fr
 import { Observable, OperatorFunction, debounceTime, distinctUntilChanged, map } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-wait',
@@ -33,10 +33,19 @@ export class AddWaitComponent {
   categoriesCollection: CollectionReference;
   waitHoldsCollection: CollectionReference;
 
-  constructor(private firestore: Firestore, private modalService: NgbModal, private router: Router) {
+  constructor(private firestore: Firestore, private modalService: NgbModal, private router: Router, private route: ActivatedRoute) {
     this.categoriesCollection = collection(firestore, 'categories');
     this.waitHoldsCollection = collection(firestore, 'wait-holds');
     this.category$ = collectionData(this.categoriesCollection, { idField: "id" }) as Observable<Category[]>;
+  }
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params: ParamMap) => {
+      var categoryNameParam = params.get('categoryName');
+      if (categoryNameParam != null) {
+        this.waitHold.category = categoryNameParam;
+      }
+    });
   }
 
   createWaitHold() {

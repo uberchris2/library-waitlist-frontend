@@ -11,6 +11,7 @@ const routes: Routes = [
   { path: 'categories', component: CategoriesComponent },
   { path: 'category/:categoryName', component: CategoryComponent },
   { path: 'add-wait', component: AddWaitComponent },
+  { path: 'add-wait/:categoryName', component: AddWaitComponent },
   { path: 'expired-holds', component: ExpiredHoldsComponent },
   { path: 'activity', component: ActivityComponent }
 ];
