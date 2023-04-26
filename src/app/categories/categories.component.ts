@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Category } from '../category';
-import { Firestore, collectionData, collection, addDoc, CollectionReference, DocumentReference, doc, DocumentData, setDoc } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Firestore, collectionData, collection, CollectionReference, doc, DocumentData, setDoc } from '@angular/fire/firestore';
+import { Observable, map } from 'rxjs';
 import { deleteDoc } from '@angular/fire/firestore';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -17,13 +17,15 @@ export class CategoriesComponent {
 
   constructor(private firestore: Firestore, private modalService: NgbModal) {
     this.categoriesCollection = collection(firestore, 'categories');
-    this.category$ = collectionData(this.categoriesCollection, { idField: "id" }) as Observable<Category[]>;
+    this.category$ = (collectionData(this.categoriesCollection, { idField: "id" }) as Observable<Category[]>).pipe(
+      map(catArr => catArr.sort((catA, catB) => (catB.holding + catB.waiting) - (catA.holding + catA.waiting)))
+    );
   }
 
   createCategory() {
-    
+
     setDoc(doc(this.categoriesCollection, this.newCategoryName), <Category>{ id: this.newCategoryName, holding: 0, waiting: 0 })
-      .then(() =>  this.newCategoryName = "");
+      .then(() => this.newCategoryName = "");
   }
 
   deleteCategory(category: Category, deleteCategoryConfirm: any) {
