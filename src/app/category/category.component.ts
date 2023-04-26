@@ -16,7 +16,6 @@ export class CategoryComponent {
   waitHoldCollection: CollectionReference;
   categoriesCollection: CollectionReference;
   categoryId = "";
-  categoryName = "";
 
   constructor(private firestore: Firestore, private modalService: NgbModal, private route: ActivatedRoute) {
     this.waitHoldCollection = collection(firestore, 'wait-holds');
@@ -26,7 +25,6 @@ export class CategoryComponent {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.categoryId = String(params.get('categoryId'));
-      docData(doc<DocumentData>(this.categoriesCollection, this.categoryId)).subscribe(cat => this.categoryName = (cat as Category).name);
       const whQuery = query(this.waitHoldCollection,
         where("category", "==", this.categoryId),
         where("status", "in", ["Waiting", "Holding"]))

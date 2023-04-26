@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Category } from '../category';
-import { Firestore, collectionData, collection, addDoc, CollectionReference, DocumentReference, doc, DocumentData } from '@angular/fire/firestore';
+import { Firestore, collectionData, collection, addDoc, CollectionReference, DocumentReference, doc, DocumentData, setDoc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { deleteDoc } from '@angular/fire/firestore';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -21,10 +21,9 @@ export class CategoriesComponent {
   }
 
   createCategory() {
-    addDoc(this.categoriesCollection, <Category>{ name: this.newCategoryName, holding: 0, waiting: 0 })
-      .then((UNUSED: DocumentReference) => {
-        this.newCategoryName = "";
-      });
+    
+    setDoc(doc(this.categoriesCollection, this.newCategoryName), <Category>{ id: this.newCategoryName, holding: 0, waiting: 0 })
+      .then(() =>  this.newCategoryName = "");
   }
 
   deleteCategory(category: Category, deleteCategoryConfirm: any) {
