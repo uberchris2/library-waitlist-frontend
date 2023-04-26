@@ -6,6 +6,7 @@ import { WaitHold } from '../wait-hold';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Category } from '../category';
 import { RxHelpers } from '../rx-helpers';
+import { DateHelpers } from '../date-helpers';
 
 @Component({
   selector: 'app-category',
@@ -46,6 +47,7 @@ export class CategoryComponent {
 
   startHold(waitHold: WaitHold) {
     waitHold.status = "Holding";
+    waitHold.holdExpiration = DateHelpers.getExpirationDate();
     this.updateHold(waitHold, -1, 1);
   }
 
@@ -58,6 +60,7 @@ export class CategoryComponent {
   demoteHold(waitHold: WaitHold) {
     waitHold.status = "Waiting";
     waitHold.created = new Date();
+    waitHold.holdExpiration = null;
     this.updateHold(waitHold, 1, -1);
   }
 
