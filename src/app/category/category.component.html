@@ -12,6 +12,7 @@
     <thead>
         <tr>
             <th scope="col">Status</th>
+            <th scope="col">Started</th>
             <th scope="col">Name</th>
             <th scope="col">Email</th>
             <th scope="col">Tool</th>
@@ -22,6 +23,7 @@
     <tbody>
         <tr *ngFor="let waitHold of waitHold$ | async">
             <td>{{waitHold.status}}</td>
+            <td>{{waitHold.created | date}}</td>
             <td>{{waitHold.name}}</td>
             <td>{{waitHold.email}}</td>
             <td>{{waitHold.tool}}</td>

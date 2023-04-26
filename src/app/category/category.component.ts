@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { Firestore, collectionData, collection, CollectionReference, doc, DocumentData, query, where, setDoc, docData } from '@angular/fire/firestore';
-import { EMPTY, Observable, first } from 'rxjs';
+import { EMPTY, Observable, first, map } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Category } from '../category';
+import { RxHelpers } from '../rx-helpers';
 
 @Component({
   selector: 'app-category',
@@ -27,8 +28,19 @@ export class CategoryComponent {
       this.categoryId = String(params.get('categoryId'));
       const whQuery = query(this.waitHoldCollection,
         where("category", "==", this.categoryId),
-        where("status", "in", ["Waiting", "Holding"]))
-      this.waitHold$ = collectionData(whQuery, { idField: "id" }) as Observable<WaitHold[]>;
+        where("status", "in", ["Waiting", "Holding"]));
+      this.waitHold$ = (collectionData(whQuery, { idField: "id" }) as Observable<WaitHold[]>).pipe(
+        RxHelpers.fixWaitHoldDates,
+        map(wha => wha.sort((wh1, wh2) => {
+          if (wh1.status != wh2.status) {
+            return wh1.status == 'Waiting' ? 1 : -1;
+          }
+          if (wh1.created != wh2.created) {
+            return wh1.created > wh2.created ? 1 : -1;
+          }
+          return 0;
+        }))
+      );
     });
   }
 
