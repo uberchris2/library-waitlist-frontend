@@ -12,9 +12,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./add-wait.component.css']
 })
 export class AddWaitComponent {
-  public waitHold: WaitHold;
-
-  private resetWaitHold = {
+  public waitHold: WaitHold = {
     category: "",
     created: new Date(),
     email: "",
@@ -36,7 +34,6 @@ export class AddWaitComponent {
   waitHoldsCollection: CollectionReference;
 
   constructor(private firestore: Firestore, private modalService: NgbModal, private router: Router) {
-    this.waitHold = this.resetWaitHold;
     this.categoriesCollection = collection(firestore, 'categories');
     this.waitHoldsCollection = collection(firestore, 'wait-holds');
     this.category$ = collectionData(this.categoriesCollection, { idField: "id" }) as Observable<Category[]>;
@@ -44,8 +41,8 @@ export class AddWaitComponent {
 
   createWaitHold() {
     addDoc(this.waitHoldsCollection, this.waitHold).then(() => {
-      this.waitHold = this.resetWaitHold;
-      this.router.navigateByUrl('/category')
+      console.log(this.waitHold.category)
+      this.router.navigate(['category', this.waitHold.category])
     });
   }
 

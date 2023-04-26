@@ -9,7 +9,7 @@ import { CategoryComponent } from './category/category.component';
 const routes: Routes = [
   { path: '', redirectTo: '/categories', pathMatch: 'full' },
   { path: 'categories', component: CategoriesComponent },
-  { path: 'category', component: CategoryComponent },
+  { path: 'category/:categoryName', component: CategoryComponent },
   { path: 'add-wait', component: AddWaitComponent },
   { path: 'expired-holds', component: ExpiredHoldsComponent },
   { path: 'activity', component: ActivityComponent }
