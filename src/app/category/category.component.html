@@ -1,5 +1,14 @@
-<h1 class="mb-3"><a [routerLink]="'/categories'">Categories</a> / {{categoryName}}</h1>
-<table class="table">
+<div class="row">
+    <div class="col">
+        <h1 class="mb-3"><a [routerLink]="'/categories'">Categories</a> / {{categoryName}}</h1>
+    </div>
+    <div class="col text-end">
+        <button [routerLink]="'/add-wait/' + categoryName" class="btn btn-primary" type="button"
+            ngbPopover="Add a member to the waitlist" triggers="mouseenter:mouseleave"><i class="bi bi-plus-lg"></i>
+            Add</button>
+    </div>
+</div>
+<table *ngIf="(waitHold$ | async)?.length" class="table">
     <thead>
         <tr>
             <th scope="col">Status</th>
@@ -19,16 +28,23 @@
             <td>{{waitHold.holdExpiration}}</td>
             <td>
                 <div class="btn-group">
-                    <button *ngIf="waitHold.status == 'Holding'" class="btn btn-success" type="button" ngbPopover="Picked up"
-                        triggers="mouseenter:mouseleave"><i class="bi bi-bag-check"></i></button>
+                    <button *ngIf="waitHold.status == 'Waiting'" (click)="startHold(waitHold)" class="btn btn-success"
+                        type="button" ngbPopover="Start hold" triggers="mouseenter:mouseleave"><i
+                            class="bi bi-stopwatch"></i></button>
+                    <button *ngIf="waitHold.status == 'Holding'" (click)="pickupHold(waitHold)" class="btn btn-success" type="button"
+                        ngbPopover="Picked up" triggers="mouseenter:mouseleave"><i class="bi bi-bag-check"></i></button>
                     <button class="btn btn-secondary" type="button" ngbPopover="Edit this hold/waitlist entry"
                         triggers="mouseenter:mouseleave"><i class="bi bi-pencil"></i></button>
-                    <button class="btn btn-danger" type="button" ngbPopover="Cancel this hold/waitlist entry"
-                        triggers="mouseenter:mouseleave"><i class="bi bi-trash"></i></button>
-                    <button *ngIf="waitHold.status == 'Holding'" class="btn btn-secondary" type="button" ngbPopover="Move to bottom of waitlist"
-                        triggers="mouseenter:mouseleave"><i class="bi bi-arrow-down"></i></button>
+                    <button (click)="cancelHold(waitHold)" class="btn btn-danger" type="button"
+                        ngbPopover="Cancel this hold/waitlist entry" triggers="mouseenter:mouseleave"><i
+                            class="bi bi-trash"></i></button>
+                    <button (click)="demoteHold(waitHold)" *ngIf="waitHold.status == 'Holding'" class="btn btn-secondary" type="button"
+                        ngbPopover="Move to bottom of waitlist" triggers="mouseenter:mouseleave"><i
+                            class="bi bi-arrow-down"></i></button>
                 </div>
             </td>
         </tr>
     </tbody>
 </table>
+<div *ngIf="(waitHold$ | async)?.length == 0" class="text-center">There are currently no members waiting for this
+    category.</div>

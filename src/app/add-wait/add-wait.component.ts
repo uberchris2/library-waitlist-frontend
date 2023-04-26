@@ -15,6 +15,7 @@ export class AddWaitComponent {
   public waitHold: WaitHold = {
     category: "",
     created: new Date(),
+    updated: new Date(),
     email: "",
     id: "",
     status: "Waiting",

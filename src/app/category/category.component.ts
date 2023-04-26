@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Firestore, collectionData, collection, addDoc, CollectionReference, DocumentReference, doc, DocumentData, query, where } from '@angular/fire/firestore';
+import { Firestore, collectionData, collection, addDoc, CollectionReference, DocumentReference, doc, DocumentData, query, where, setDoc } from '@angular/fire/firestore';
 import { EMPTY, Observable } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
@@ -22,8 +22,37 @@ export class CategoryComponent {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.categoryName = String(params.get('categoryName'));
-      const whQuery = query(this.waitHoldCollection, where("category", "==", this.categoryName))
+      const whQuery = query(this.waitHoldCollection,
+        where("category", "==", this.categoryName),
+        where("status", "in", ["Waiting", "Holding"]))
       this.waitHold$ = collectionData(whQuery, { idField: "id" }) as Observable<WaitHold[]>;
     });
+  }
+
+  startHold(waitHold: WaitHold) {
+    waitHold.status = "Holding";
+    this.editHold(waitHold);
+  }
+
+  cancelHold(waitHold: WaitHold) {
+    waitHold.status = "Cancelled";
+    this.editHold(waitHold);
+  }
+
+  demoteHold(waitHold: WaitHold) {
+    waitHold.status = "Waiting";
+    waitHold.created = new Date();
+    this.editHold(waitHold);
+  }
+
+  pickupHold(waitHold: WaitHold) {
+    waitHold.status = "Completed";
+    this.editHold(waitHold);
+  }
+
+  private editHold(waitHold: WaitHold) {
+    var waitHoldReference = doc<DocumentData>(this.waitHoldCollection, waitHold.id);
+    waitHold.updated = new Date();
+    setDoc(waitHoldReference, waitHold);
   }
 }
