@@ -5,7 +5,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div [ngbCollapse]="isNavbarCollapsed" class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav me-auto">
                 <li class="nav-item active">
                     <a class="nav-link" [routerLink]="'/categories'" [routerLinkActive]="['active']">Categories</a>
                 </li>
@@ -22,6 +22,7 @@
                     <a class="nav-link" [routerLink]="'/update-users'" [routerLinkActive]="['active']">Members</a>
                 </li>
             </ul>
+            <button class="btn btn-light" type="button" *ngIf="user" (click)="logout()"><i class="bi bi-box-arrow-left"></i> Logout</button>
         </div>
     </div>
 </nav>
