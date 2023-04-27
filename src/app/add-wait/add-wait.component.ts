@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { Category } from '../category';
-import { Firestore, collectionData, collection, addDoc, CollectionReference, docData, setDoc, doc, DocumentData } from '@angular/fire/firestore';
-import { Observable, OperatorFunction, debounceTime, distinctUntilChanged, first, map } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Firestore, collectionData, collection, addDoc, CollectionReference, docData, setDoc, doc, DocumentData, query, where, limit } from '@angular/fire/firestore';
+import { Observable, OperatorFunction, catchError, debounceTime, distinctUntilChanged, first, map, of, switchMap } from 'rxjs';
+import { NgbModal, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Member } from '../member';
 
 @Component({
   selector: 'app-add-wait',
@@ -33,10 +34,12 @@ export class AddWaitComponent {
   category$: Observable<Category[]>;
   categoriesCollection: CollectionReference;
   waitHoldsCollection: CollectionReference;
+  membersCollection: CollectionReference;
 
   constructor(private firestore: Firestore, private modalService: NgbModal, private router: Router, private route: ActivatedRoute) {
     this.categoriesCollection = collection(firestore, 'categories');
     this.waitHoldsCollection = collection(firestore, 'wait-holds');
+    this.membersCollection = collection(firestore, 'members');
     this.category$ = collectionData(this.categoriesCollection, { idField: 'id' }) as Observable<Category[]>;
   }
 
@@ -62,12 +65,28 @@ export class AddWaitComponent {
     });
   }
 
-  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+  memberSelected(event: NgbTypeaheadSelectItemEvent) {
+    this.waitHold.name = event.item.name;
+    this.waitHold.email = event.item.email;
+  }
+
+  memberNameEntered(event: any) {
+    this.waitHold.name = event.target.value;
+  }
+
+  search: OperatorFunction<string, readonly Member[]> = (text$: Observable<string>) =>
     text$.pipe(
-      debounceTime(100),
+      debounceTime(200),
       distinctUntilChanged(),
-      map((term) =>
-        term.length < 1 ? [] : this.names.filter((v) => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10),
-      ),
-    );
+      switchMap((term) => {
+        const searchQuery = query(this.membersCollection,
+          where('name', '>=', term),
+          where('name', '<=', term + '\uf8ff'),
+          limit(10)
+        );
+        return (collectionData(searchQuery) as Observable<Member[]>);
+      }));
+
+  formatter = (x: { name: string }) => x.name;
+
 }

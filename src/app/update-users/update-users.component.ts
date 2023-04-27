@@ -19,7 +19,7 @@ export class UpdateUsersComponent {
     this.fileToUpload = event.files.item(0);
   }
 
-  updateUsers() {
+  updateMembers() {
     if (!this.fileToUpload) return;
     this.updateProgress("Reading file", 5);
 

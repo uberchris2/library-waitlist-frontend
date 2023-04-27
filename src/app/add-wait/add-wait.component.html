@@ -10,8 +10,9 @@
             </div>
             <div class="form-group mt-3">
                 <label for="nameInput">Member name</label>
-                <input type="text" class="form-control" id="nameInput" name="nameInput" [(ngModel)]="waitHold.name" [ngbTypeahead]="search"
-                    placeholder="Joe Pesci" />
+                <input type="text" class="form-control" id="nameInput" name="nameInput" [ngbTypeahead]="search"
+                    [resultTemplate]="rt" [inputFormatter]="formatter" (selectItem)="memberSelected($event)"
+                    (change)="memberNameEntered($event)" placeholder="Joe Pesci" />
             </div>
             <div class="form-group mt-3">
                 <label for="emailInput">Email address</label>
@@ -21,11 +22,17 @@
             <div class="form-group mt-3">
                 <label for="toolInput">Tool <span class="text-muted">(leave blank for next
                         available)</span></label>
-                <input type="text" class="form-control" id="toolInput" name="toolInput" [(ngModel)]="waitHold.tool" placeholder="1234">
+                <input type="text" class="form-control" id="toolInput" name="toolInput" [(ngModel)]="waitHold.tool"
+                    placeholder="1234">
             </div>
             <div class="mt-3">
-                <button (click)="createWaitHold()" type="button" class="btn btn-success me-1" [disabled]="!waitHold.category || !waitHold.name || !waitHold.email">Add</button>
+                <button (click)="createWaitHold()" type="button" class="btn btn-success me-1"
+                    [disabled]="!waitHold.category || !waitHold.name || !waitHold.email">Add</button>
                 <button [routerLink]="'/'" type="button" class="btn btn-secondary">Cancel</button>
             </div>
         </form>
     </div>
+
+    <ng-template #rt let-r="result" let-t="term">
+        <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
+    </ng-template>
