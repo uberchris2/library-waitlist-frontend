@@ -27,7 +27,7 @@
             <td>{{waitHold.name}}</td>
             <td>{{waitHold.email}}</td>
             <td>{{waitHold.tool}}</td>
-            <td [class.text-danger]="waitHold.holdExpiration && waitHold.holdExpiration > today" class="text-danger">{{waitHold.holdExpiration | date}}</td>
+            <td [class.text-danger]="waitHold.holdExpiration && waitHold.holdExpiration < today" class="text-danger">{{waitHold.holdExpiration | date}}</td>
             <td>
                 <div class="btn-group">
                     <button *ngIf="waitHold.status == 'Waiting'" (click)="startHold(waitHold)" class="btn btn-primary"
