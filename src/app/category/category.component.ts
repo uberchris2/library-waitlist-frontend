@@ -19,6 +19,7 @@ export class CategoryComponent {
   waitHoldCollection: CollectionReference;
   categoriesCollection: CollectionReference;
   categoryId = "";
+  today = new Date();
 
   constructor(private firestore: Firestore, private modalService: NgbModal, private route: ActivatedRoute) {
     this.waitHoldCollection = collection(firestore, 'wait-holds');
