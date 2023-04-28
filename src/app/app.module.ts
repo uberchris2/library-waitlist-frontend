@@ -16,6 +16,7 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { EditWaitComponent } from './edit-wait/edit-wait.component';
 import { UpdateUsersComponent } from './update-users/update-users.component';
 import { NgxCsvParserModule } from 'ngx-csv-parser';
+import { ClipboardModule } from 'ngx-clipboard';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { NgxCsvParserModule } from 'ngx-csv-parser';
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
-    NgxCsvParserModule
+    NgxCsvParserModule,
+    ClipboardModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -12,7 +12,7 @@
     <thead>
         <tr>
             <th scope="col">Status</th>
-            <th scope="col">Started</th>
+            <th scope="col">Added</th>
             <th scope="col">Name</th>
             <th scope="col">Email</th>
             <th scope="col">Tool</th>
@@ -25,9 +25,16 @@
             <td>{{waitHold.status}}</td>
             <td>{{waitHold.created | date}}</td>
             <td>{{waitHold.name}}</td>
-            <td>{{waitHold.email}}</td>
+            <td>
+                {{waitHold.email}}
+                <button class="btn btn-light btn-sm" ngxClipboard [cbContent]="waitHold.email"
+                    ngbPopover="Copy email to clipboard" triggers="mouseenter:mouseleave">
+                    <i class="bi bi-clipboard"></i>
+                </button>
+            </td>
             <td>{{waitHold.tool}}</td>
-            <td [class.text-danger]="waitHold.holdExpiration && waitHold.holdExpiration < today" class="text-danger">{{waitHold.holdExpiration | date}}</td>
+            <td [class.text-danger]="waitHold.holdExpiration && waitHold.holdExpiration < today" class="text-danger">
+                {{waitHold.holdExpiration | date}}</td>
             <td>
                 <div class="btn-group">
                     <button *ngIf="waitHold.status == 'Waiting'" (click)="startHold(waitHold)" class="btn btn-primary"
@@ -42,9 +49,9 @@
                     <button (click)="cancelWaitHold(waitHold)" class="btn btn-danger" type="button"
                         ngbPopover="Cancel this hold/waitlist entry" triggers="mouseenter:mouseleave"><i
                             class="bi bi-trash"></i></button>
-                    <button (click)="demoteHold(waitHold)" *ngIf="waitHold.status == 'Holding'"
-                        class="btn btn-warning" type="button" ngbPopover="Move to bottom of waitlist"
-                        triggers="mouseenter:mouseleave"><i class="bi bi-arrow-down"></i></button>
+                    <button (click)="demoteHold(waitHold)" *ngIf="waitHold.status == 'Holding'" class="btn btn-warning"
+                        type="button" ngbPopover="Move to bottom of waitlist" triggers="mouseenter:mouseleave"><i
+                            class="bi bi-arrow-down"></i></button>
                 </div>
             </td>
         </tr>

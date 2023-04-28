@@ -70,6 +70,4 @@ export class CategoryComponent {
     waitHold.status = "Completed";
     HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold, 0, -1);
   }
-
-  
 }
