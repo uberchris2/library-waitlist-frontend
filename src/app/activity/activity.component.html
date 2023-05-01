@@ -11,6 +11,7 @@
             <th scope="col">Email</th>
             <th scope="col">Tool</th>
             <th scope="col">Hold Expiration</th>
+            <th scope="col">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -23,6 +24,12 @@
             <td>{{waitHold.email}}</td>
             <td>{{waitHold.tool}}</td>
             <td>{{waitHold.holdExpiration | date}}</td>
+            <td>
+                <div class="btn-group">
+                    <button *ngIf="['Cancelled', 'Completed'].includes(waitHold.status)" (click)="revive(waitHold)" class="btn btn-secondary"
+                        type="button" ngbPopover="Revive previously closed hold" triggers="mouseenter:mouseleave"><i class="bi bi-heart-pulse"></i></button>
+                </div>
+            </td>
         </tr>
 
     </tbody>
