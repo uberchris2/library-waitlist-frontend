@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Category } from '../category';
 import { Firestore, collectionData, collection, CollectionReference, doc, DocumentData, setDoc, query, where } from '@angular/fire/firestore';
-import { Observable, first, map } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest, combineLatestAll, filter, first, map, merge, mergeMap } from 'rxjs';
 import { deleteDoc } from '@angular/fire/firestore';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-categories',
@@ -16,12 +17,17 @@ export class CategoriesComponent {
   categoriesCollection: CollectionReference;
   waitHoldCollection: CollectionReference;
   newCategoryName = "";
+  searchTerm$ = new BehaviorSubject<string>('');
+  @ViewChild('categorySearch', { static: true }) categorySearch!: ElementRef;
 
   constructor(private firestore: Firestore, private modalService: NgbModal) {
     this.categoriesCollection = collection(firestore, 'categories');
     this.waitHoldCollection = collection(firestore, 'wait-holds');
-    this.category$ = (collectionData(this.categoriesCollection, { idField: "id" }) as Observable<Category[]>).pipe(
+    let unfilteredCategories$ = (collectionData(this.categoriesCollection, { idField: "id" }) as Observable<Category[]>).pipe(
       map(catArr => catArr.sort((catA, catB) => (catB.holding + catB.waiting) - (catA.holding + catA.waiting)))
+    );
+    this.category$ = combineLatest([unfilteredCategories$, this.searchTerm$]).pipe(
+      map(([categories, term]) => categories.filter(category => category.id.toLowerCase().includes(term.toLowerCase())))
     );
   }
 
@@ -48,5 +54,14 @@ export class CategoriesComponent {
         }
       });
     });
+  }
+
+  onSearch(term: any) {
+    this.searchTerm$.next(term.target.value);
+  }
+
+  clearSearch() {
+    this.categorySearch.nativeElement.value = '';
+    this.searchTerm$.next('');
   }
 }
