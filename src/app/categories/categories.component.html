@@ -27,14 +27,12 @@
                 <li class="list-group-item">{{category.waiting}} members waiting</li>
             </ul>
             <div class="card-footer">
-                <div class="btn-group">
-                    <button [routerLink]="'/add-wait/' + category.id" class="btn btn-success" type="button"
-                        ngbPopover="Add a member to the waitlist" triggers="mouseenter:mouseleave"><i
-                            class="bi bi-plus-lg"></i> Add</button>
-                    <button (click)="deleteCategory(category, deleteCategoryConfirm)" class="btn btn-dark" type="button"
-                        ngbPopover="Remove this category" triggers="mouseenter:mouseleave"><i class="bi bi-trash"></i>
-                        Delete</button>
-                </div>
+                <button [routerLink]="'/add-wait/' + category.id" class="btn btn-success me-1" type="button"
+                    ngbPopover="Add a member to the waitlist" triggers="mouseenter:mouseleave"><i
+                        class="bi bi-plus-lg"></i> Add</button>
+                <button (click)="deleteCategory(category, deleteCategoryConfirm)" class="btn btn-light" type="button"
+                    ngbPopover="Remove this category" triggers="mouseenter:mouseleave"><i class="bi bi-trash"></i>
+                    Delete</button>
             </div>
             <!-- <div class="card-footer">
                 <a href="#" class="text-muted" style="text-decoration: none;"><i class="bi bi-pencil"></i> Edit

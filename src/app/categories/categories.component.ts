@@ -24,7 +24,7 @@ export class CategoriesComponent {
     this.categoriesCollection = collection(firestore, 'categories');
     this.waitHoldCollection = collection(firestore, 'wait-holds');
     let unfilteredCategories$ = (collectionData(this.categoriesCollection, { idField: "id" }) as Observable<Category[]>).pipe(
-      map(catArr => catArr.sort((catA, catB) => (catB.holding + catB.waiting) - (catA.holding + catA.waiting)))
+      // map(catArr => catArr.sort((catA, catB) => (catB.holding + catB.waiting) - (catA.holding + catA.waiting)))
     );
     this.category$ = combineLatest([unfilteredCategories$, this.searchTerm$]).pipe(
       map(([categories, term]) => categories.filter(category => category.id.toLowerCase().includes(term.toLowerCase())))
@@ -46,12 +46,10 @@ export class CategoriesComponent {
       var categoryReference = doc<DocumentData>(this.categoriesCollection, category.id);
       deleteDoc(categoryReference);
       // cancel holds for category
-      const whQuery = query(this.waitHoldCollection,
-        where("category", "==", category.id),
-        where("status", "in", ["Waiting", "Holding"]));
+      const whQuery = query(this.waitHoldCollection, where("category", "==", category.id));
       this.subscriptions.push((collectionData(whQuery, { idField: "id" }) as Observable<WaitHold[]>).pipe(first()).subscribe(whArr => {
         for (var wh of whArr) {
-          wh.status = 'Cancelled';
+          wh.status = 'Category Removed';
           wh.updated = new Date();
           const waitHoldReference = doc<DocumentData>(this.waitHoldCollection, wh.id);
           setDoc(waitHoldReference, wh);
