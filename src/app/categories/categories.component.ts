@@ -1,11 +1,10 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Category } from '../category';
 import { Firestore, collectionData, collection, CollectionReference, doc, DocumentData, setDoc, query, where } from '@angular/fire/firestore';
-import { BehaviorSubject, Observable, Subject, combineLatest, combineLatestAll, filter, first, map, merge, mergeMap } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, combineLatest, first, map } from 'rxjs';
 import { deleteDoc } from '@angular/fire/firestore';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
-import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-categories',
@@ -19,6 +18,7 @@ export class CategoriesComponent {
   newCategoryName = "";
   searchTerm$ = new BehaviorSubject<string>('');
   @ViewChild('categorySearch', { static: true }) categorySearch!: ElementRef;
+  subscriptions: Subscription[] = [];
 
   constructor(private firestore: Firestore, private modalService: NgbModal) {
     this.categoriesCollection = collection(firestore, 'categories');
@@ -29,6 +29,10 @@ export class CategoriesComponent {
     this.category$ = combineLatest([unfilteredCategories$, this.searchTerm$]).pipe(
       map(([categories, term]) => categories.filter(category => category.id.toLowerCase().includes(term.toLowerCase())))
     );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 
   createCategory() {
@@ -45,14 +49,14 @@ export class CategoriesComponent {
       const whQuery = query(this.waitHoldCollection,
         where("category", "==", category.id),
         where("status", "in", ["Waiting", "Holding"]));
-      (collectionData(whQuery, { idField: "id" }) as Observable<WaitHold[]>).pipe(first()).subscribe(whArr => {
+      this.subscriptions.push((collectionData(whQuery, { idField: "id" }) as Observable<WaitHold[]>).pipe(first()).subscribe(whArr => {
         for (var wh of whArr) {
           wh.status = 'Cancelled';
           wh.updated = new Date();
           const waitHoldReference = doc<DocumentData>(this.waitHoldCollection, wh.id);
           setDoc(waitHoldReference, wh);
         }
-      });
+      }));
     });
   }
 

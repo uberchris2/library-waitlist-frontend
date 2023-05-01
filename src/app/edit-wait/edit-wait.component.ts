@@ -25,12 +25,6 @@ export class EditWaitComponent {
     tool: ""
   };
 
-  names = [
-    'Jason Moma',
-    'Chris Evans',
-    'George Clooney'
-  ];
-
   category$: Observable<Category[]>;
   categoriesCollection: CollectionReference;
   waitHoldsCollection: CollectionReference;
@@ -61,17 +55,8 @@ export class EditWaitComponent {
     });
   }
 
-  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(100),
-      distinctUntilChanged(),
-      map((term) =>
-        term.length < 1 ? [] : this.names.filter((v) => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10),
-      ),
-    );
-
-    updateDate(dateString: string) {
-      // https://stackoverflow.com/questions/7556591/is-the-javascript-date-object-always-one-day-off
-      this.waitHold.holdExpiration = new Date(dateString.replace(/-/g, '\/'));
-    }
+  updateDate(dateString: string) {
+    // https://stackoverflow.com/questions/7556591/is-the-javascript-date-object-always-one-day-off
+    this.waitHold.holdExpiration = new Date(dateString.replace(/-/g, '\/'));
+  }
 }

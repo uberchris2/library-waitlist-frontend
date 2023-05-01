@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CollectionReference, DocumentData, Firestore, collection, collectionData, deleteDoc, doc, writeBatch } from '@angular/fire/firestore';
 import { NgxCSVParserError, NgxCsvParser } from 'ngx-csv-parser';
-import { first } from 'rxjs';
+import { Subscription, first } from 'rxjs';
 
 @Component({
   selector: 'app-update-users',
@@ -12,8 +12,13 @@ export class UpdateUsersComponent {
   fileToUpload: File | null = null;
   currentState = "";
   progress = 0;
+  subscriptions: Subscription[] = [];
 
   constructor(private ngxCsvParser: NgxCsvParser, private firestore: Firestore) { }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
+  }
 
   handleFileInput(event: any) {
     this.fileToUpload = event.files.item(0);
@@ -23,7 +28,7 @@ export class UpdateUsersComponent {
     if (!this.fileToUpload) return;
     this.updateProgress("Reading file", 5);
 
-    this.ngxCsvParser
+    this.subscriptions.push(this.ngxCsvParser
       .parse(this.fileToUpload, { header: true, delimiter: ',', encoding: 'utf8' })
       .subscribe({
         next: (result): void => {
@@ -33,7 +38,7 @@ export class UpdateUsersComponent {
           console.log('Error', error);
           this.updateProgress("Error");
         }
-      });
+      }));
   }
 
   private updateProgress(newState: string, newProgress?: number) {
@@ -51,18 +56,18 @@ export class UpdateUsersComponent {
       return;
     }
     this.updateProgress("Preparing list", 12);
-    newMembers = newMembers.map(m => ({ name: m['First Name'] + ' ' + m['Last Name'], email: m['Email']}));
+    newMembers = newMembers.map(m => ({ name: m['First Name'] + ' ' + m['Last Name'], email: m['Email'] }));
     this.updateProgress("Removing old member list", 15);
 
     var membersCollection = collection(this.firestore, 'members');
-    collectionData(membersCollection, { idField: "id" }).pipe(first())
+    this.subscriptions.push(collectionData(membersCollection, { idField: "id" }).pipe(first())
       .subscribe(oldMembers => {
         if (oldMembers.length) {
           this.deleteMember(membersCollection, oldMembers)
         }
         this.updateProgress("Importing new member list", 50);
         this.addMembers(membersCollection, newMembers);
-      });
+      }));
   }
 
   private deleteMember(membersCollection: CollectionReference, oldMembers: any[]) {

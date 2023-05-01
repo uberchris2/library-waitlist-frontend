@@ -5,7 +5,7 @@
             <div class="form-group mt-3">
                 <label for="nameInput">Member name</label>
                 <input type="text" class="form-control" id="nameInput" name="nameInput" [(ngModel)]="waitHold.name"
-                    [ngbTypeahead]="search" placeholder="Joe Pesci" />
+                    placeholder="Joe Pesci" />
             </div>
             <div class="form-group mt-3">
                 <label for="emailInput">Email address</label>
@@ -21,11 +21,12 @@
             <div class="form-group mt-3" *ngIf="waitHold.status == 'Holding'">
                 <label for="holdInput">Hold Expiration</label>
                 <input type="date" class="form-control" id="holdInput" name="holdInput"
-                    [ngModel]="waitHold.holdExpiration | date:'yyyy-MM-dd'"
-                    (ngModelChange)="updateDate($event)" placeholder="1234">
+                    [ngModel]="waitHold.holdExpiration | date:'yyyy-MM-dd'" (ngModelChange)="updateDate($event)"
+                    placeholder="1234">
             </div>
             <div class="mt-3">
-                <button (click)="updateWaitHold()" type="button" class="btn btn-primary me-1">Save</button>
+                <button (click)="updateWaitHold()" [disabled]="!waitHold.category || !waitHold.name || !waitHold.email"
+                    type="button" class="btn btn-primary me-1">Save</button>
                 <button [routerLink]="'/category/' + waitHold.category" type="button"
                     class="btn btn-secondary">Cancel</button>
             </div>

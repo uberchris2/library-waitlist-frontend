@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Category } from '../category';
 import { Firestore, collectionData, collection, addDoc, CollectionReference, docData, setDoc, doc, DocumentData, query, where, limit } from '@angular/fire/firestore';
-import { Observable, OperatorFunction, catchError, debounceTime, distinctUntilChanged, first, map, of, switchMap } from 'rxjs';
+import { Observable, OperatorFunction, Subscription, catchError, debounceTime, distinctUntilChanged, first, map, of, switchMap } from 'rxjs';
 import { NgbModal, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
@@ -25,16 +25,11 @@ export class AddWaitComponent {
     tool: ""
   };
 
-  names = [
-    'Jason Moma',
-    'Chris Evans',
-    'George Clooney'
-  ];
-
   category$: Observable<Category[]>;
   categoriesCollection: CollectionReference;
   waitHoldsCollection: CollectionReference;
   membersCollection: CollectionReference;
+  subscriptions: Subscription[] = [];
 
   constructor(private firestore: Firestore, private modalService: NgbModal, private router: Router, private route: ActivatedRoute) {
     this.categoriesCollection = collection(firestore, 'categories');
@@ -44,24 +39,28 @@ export class AddWaitComponent {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params: ParamMap) => {
+    this.subscriptions.push(this.route.paramMap.subscribe((params: ParamMap) => {
       var categoryIdParam = params.get('categoryId');
       if (categoryIdParam != null) {
         this.waitHold.category = categoryIdParam;
       }
-    });
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 
   createWaitHold() {
     addDoc(this.waitHoldsCollection, this.waitHold).then(() => {
       const categoryReference = doc<DocumentData>(this.categoriesCollection, this.waitHold.category);
-      docData(categoryReference).pipe(first()).subscribe(cat => {
+      this.subscriptions.push(docData(categoryReference).pipe(first()).subscribe(cat => {
         var updatedCategory = cat as Category;
         updatedCategory.waiting = updatedCategory.waiting + 1;
         setDoc(categoryReference, updatedCategory).then(() => {
           this.router.navigate(['category', this.waitHold.category])
         });
-      });
+      }));
     });
   }
 

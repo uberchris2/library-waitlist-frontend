@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { Firestore, collectionData, collection, CollectionReference, doc, DocumentData, query, where, setDoc, docData } from '@angular/fire/firestore';
-import { EMPTY, Observable, first, map } from 'rxjs';
+import { Firestore, collectionData, collection, CollectionReference, query, where } from '@angular/fire/firestore';
+import { EMPTY, Observable, Subscription, map } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Category } from '../category';
 import { RxHelpers } from '../rx-helpers';
 import { DateHelpers } from '../date-helpers';
 import { HoldHelpers } from '../hold-helpers';
@@ -20,6 +19,7 @@ export class CategoryComponent {
   categoriesCollection: CollectionReference;
   categoryId = "";
   today = new Date();
+  subscriptions: Subscription[] = [];
 
   constructor(private firestore: Firestore, private modalService: NgbModal, private route: ActivatedRoute) {
     this.waitHoldCollection = collection(firestore, 'wait-holds');
@@ -27,7 +27,7 @@ export class CategoryComponent {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params: ParamMap) => {
+    this.subscriptions.push(this.route.paramMap.subscribe((params: ParamMap) => {
       this.categoryId = String(params.get('categoryId'));
       const whQuery = query(this.waitHoldCollection,
         where("category", "==", this.categoryId),
@@ -44,7 +44,11 @@ export class CategoryComponent {
           return 0;
         }))
       );
-    });
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 
   startHold(waitHold: WaitHold) {
