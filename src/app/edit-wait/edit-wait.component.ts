@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { Category } from '../category';
 import { Firestore, collectionData, collection, addDoc, CollectionReference, doc, DocumentData, docData, DocumentReference, setDoc } from '@angular/fire/firestore';
-import { Observable, OperatorFunction, debounceTime, distinctUntilChanged, map } from 'rxjs';
+import { Observable, OperatorFunction, Subscription, debounceTime, distinctUntilChanged, map } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { RxHelpers } from '../rx-helpers';
 
 @Component({
   selector: 'app-edit-wait',
@@ -33,6 +34,7 @@ export class EditWaitComponent {
   category$: Observable<Category[]>;
   categoriesCollection: CollectionReference;
   waitHoldsCollection: CollectionReference;
+  subscriptions: Subscription[] = [];
 
   constructor(private firestore: Firestore, private modalService: NgbModal, private router: Router, private route: ActivatedRoute) {
     this.categoriesCollection = collection(firestore, 'categories');
@@ -41,10 +43,16 @@ export class EditWaitComponent {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params: ParamMap) => {
+    this.subscriptions.push(this.route.paramMap.subscribe((params: ParamMap) => {
       var waitHoldId = String(params.get('waitHoldId'));
-      docData(doc<DocumentData>(this.waitHoldsCollection, waitHoldId)).subscribe(wh => this.waitHold = wh as WaitHold);
-    });
+      this.subscriptions.push(docData(doc<DocumentData>(this.waitHoldsCollection, waitHoldId))
+        .pipe(RxHelpers.fixWaitHoldDate)
+        .subscribe(wh => this.waitHold = wh as WaitHold));
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 
   updateWaitHold() {
@@ -61,4 +69,9 @@ export class EditWaitComponent {
         term.length < 1 ? [] : this.names.filter((v) => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10),
       ),
     );
+
+    updateDate(dateString: string) {
+      // https://stackoverflow.com/questions/7556591/is-the-javascript-date-object-always-one-day-off
+      this.waitHold.holdExpiration = new Date(dateString.replace(/-/g, '\/'));
+    }
 }
