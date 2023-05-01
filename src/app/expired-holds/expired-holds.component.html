@@ -15,7 +15,13 @@
   <tbody>
     <tr *ngFor="let expiredHold of expiredHold$ | async">
       <td>{{expiredHold.name}}</td>
-      <td>{{expiredHold.email}}</td>
+      <td>
+        {{expiredHold.email}}
+        <button class="btn btn-light btn-sm" ngxClipboard [cbContent]="expiredHold.email"
+          ngbPopover="Copy email to clipboard" triggers="mouseenter:mouseleave">
+          <i class="bi bi-clipboard"></i>
+        </button>
+      </td>
       <td>{{expiredHold.category}}</td>
       <td>{{expiredHold.tool}}</td>
       <td>{{expiredHold.updated | date}}</td>
@@ -27,12 +33,14 @@
       </td>
       <td>
         <div class="btn-group">
-          <button (click)="cancelHold(expiredHold, false)" class="btn btn-danger" type="button" ngbPopover="Cancel this hold" triggers="mouseenter:mouseleave"><i
-              class="bi bi-trash"></i></button>
-          <button (click)="cancelHold(expiredHold, true)" class="btn btn-warning" type="button" ngbPopover="Cancel this hold, and view category waitlist"
-            triggers="mouseenter:mouseleave"><i class="bi bi-recycle"></i></button>
-          <button (click)="demoteHold(expiredHold)" class="btn btn-secondary" type="button" ngbPopover="Move to bottom of waitlist"
-            triggers="mouseenter:mouseleave"><i class="bi bi-arrow-down"></i></button>
+          <button (click)="cancelHold(expiredHold, false)" class="btn btn-danger" type="button"
+            ngbPopover="Cancel this hold" triggers="mouseenter:mouseleave"><i class="bi bi-trash"></i></button>
+          <button (click)="cancelHold(expiredHold, true)" class="btn btn-warning" type="button"
+            ngbPopover="Cancel this hold, and view category waitlist" triggers="mouseenter:mouseleave"><i
+              class="bi bi-recycle"></i></button>
+          <button (click)="demoteHold(expiredHold)" class="btn btn-secondary" type="button"
+            ngbPopover="Move to bottom of waitlist" triggers="mouseenter:mouseleave"><i
+              class="bi bi-arrow-down"></i></button>
         </div>
       </td>
     </tr>
