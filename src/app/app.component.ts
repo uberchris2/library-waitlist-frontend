@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Auth, signInWithRedirect, user, User } from '@angular/fire/auth';
-import { getAuth, GoogleAuthProvider } from '@firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from '@firebase/auth';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +12,7 @@ export class AppComponent {
   user: User | undefined | null;
 
   constructor(private auth: Auth) {
+    var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
     var user$ = user(auth);
     user$.subscribe(u => {
       this.user = u;
@@ -20,7 +21,7 @@ export class AppComponent {
         provider.addScope("https://www.googleapis.com/auth/cloud-platform");
         provider.addScope("https://www.googleapis.com/auth/datastore");
         var auth = getAuth();
-        signInWithRedirect(auth, provider);
+        isFirefox ? signInWithPopup(auth, provider) : signInWithRedirect(auth, provider);
       }
     });
   }
