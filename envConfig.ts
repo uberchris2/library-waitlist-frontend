@@ -9,6 +9,7 @@ const environmentFileContent = `export const environment = {
         appId: '1:346705633941:web:6d3c42bfe3c7955cee319c',
         storageBucket: 'waitlist-firebase.appspot.com',
         apiKey: '${process.env['FIREBASE_API_KEY']}',
+        authDomain: 'web.app',
         authDomain: 'waitlist-firebase.firebaseapp.com',
         messagingSenderId: '346705633941',
         measurementId: 'G-J92GC4CZ5N',
