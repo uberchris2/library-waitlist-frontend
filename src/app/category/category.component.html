@@ -49,7 +49,7 @@
                     <button (click)="cancelWaitHold(waitHold)" class="btn btn-danger" type="button"
                         ngbPopover="Cancel this hold/waitlist entry" triggers="mouseenter:mouseleave"><i
                             class="bi bi-trash"></i></button>
-                    <button (click)="demoteHold(waitHold)" *ngIf="waitHold.status == 'Holding'" class="btn btn-warning"
+                    <button (click)="demoteHold(waitHold)" class="btn btn-warning"
                         type="button" ngbPopover="Move to bottom of waitlist" triggers="mouseenter:mouseleave"><i
                             class="bi bi-arrow-down"></i></button>
                 </div>
