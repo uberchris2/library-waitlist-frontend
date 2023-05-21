@@ -79,8 +79,8 @@ export class AddWaitComponent {
       distinctUntilChanged(),
       switchMap((term) => {
         const searchQuery = query(this.membersCollection,
-          where('name', '>=', term),
-          where('name', '<=', term + '\uf8ff'),
+          where('name', '>=', this.capitalizeFirstLetter(term)),
+          where('name', '<=', this.capitalizeFirstLetter(term) + '\uf8ff'),
           limit(10)
         );
         return (collectionData(searchQuery) as Observable<Member[]>);
@@ -88,4 +88,7 @@ export class AddWaitComponent {
 
   formatter = (x: { name: string }) => x.name;
 
+  private capitalizeFirstLetter(string: string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
 }
