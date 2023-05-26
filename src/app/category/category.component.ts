@@ -68,7 +68,7 @@ export class CategoryComponent {
     waitHold.status = "Waiting";
     waitHold.created = new Date();
     waitHold.holdExpiration = null;
-    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold, 0, wasHold ? 0 : -1);
+    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold, wasHold ? 1 : 0, wasHold ? -1 : 0);
   }
 
   pickupHold(waitHold: WaitHold) {
