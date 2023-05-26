@@ -64,10 +64,11 @@ export class CategoryComponent {
   }
 
   demoteHold(waitHold: WaitHold) {
+    const wasHold = waitHold.status == "Holding";
     waitHold.status = "Waiting";
     waitHold.created = new Date();
     waitHold.holdExpiration = null;
-    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold, 1, -1);
+    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold, 0, wasHold ? 0 : -1);
   }
 
   pickupHold(waitHold: WaitHold) {
