@@ -48,13 +48,18 @@ export class UpdateUsersComponent {
 
   private processUpdate(newMembers: any[]) {
     this.updateProgress("Checking file", 10);
+    
     const badMembers = newMembers.filter(m => !m['First Name'] || !m['Last Name'] || !m['Email']);
-    if (badMembers.length > 0 || newMembers.length == 0) {
-      this.updateProgress("Error");
-      console.log("Invalid or no members")
+    if (badMembers.length > 0 ) {
+      console.log("Invalid members: ")
       console.log(badMembers);
+    }
+    newMembers = newMembers.filter(m => m['First Name'] && m['Last Name'] && m['Email']);
+    if (newMembers.length == 0) {
+      this.updateProgress("Error: Invalid or no members (see console for details)");
       return;
     }
+    
     this.updateProgress("Preparing list", 12);
     newMembers = newMembers.map(m => ({ name: m['First Name'] + ' ' + m['Last Name'], email: m['Email'] }));
     this.updateProgress("Removing old member list", 15);
