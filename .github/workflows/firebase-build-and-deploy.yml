@@ -17,7 +17,7 @@ jobs:
           node-version: 18.x
           cache: "npm"
       - run: npm install
-      - run: npm run config
+      - run: npm run config-nestl
         env:
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
       - run: npm run build
@@ -28,6 +28,10 @@ jobs:
           channelId: live
           projectId: waitlist-firebase
           target: waitlist-firebase
+      - run: npm run config-shoreline
+        env:
+          FIREBASE_SHORELINE_API_KEY: ${{ secrets.FIREBASE_SHORELINE_API_KEY }}
+      - run: npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
