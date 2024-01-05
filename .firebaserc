@@ -5,10 +5,14 @@
   "targets": {
     "waitlist-firebase": {
       "hosting": {
-        "library-waitlist": [
+        "waitlist-firebase": [
           "waitlist-firebase"
-        ],
-        "shoreline": [
+        ]
+      }
+    },
+	"waitlist-shoreline": {
+      "hosting": {
+        "waitlist-shoreline": [
           "waitlist-shoreline"
         ]
       }

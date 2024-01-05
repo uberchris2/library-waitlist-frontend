@@ -27,9 +27,11 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_WAITLIST_FIREBASE }}'
           channelId: live
           projectId: waitlist-firebase
+          target: waitlist-firebase
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_WAITLIST_FIREBASE }}'
           channelId: live
           projectId: waitlist-shoreline
+          target: waitlist-shoreline
