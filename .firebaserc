@@ -1,14 +1,18 @@
 {
+  "projects": {
+    "default": "waitlist-firebase"
+  },
   "targets": {
     "waitlist-firebase": {
       "hosting": {
         "library-waitlist": [
           "waitlist-firebase"
+        ],
+        "shoreline": [
+          "waitlist-shoreline"
         ]
       }
     }
   },
-  "projects": {
-    "default": "waitlist-firebase"
-  }
+  "etags": {}
 }
