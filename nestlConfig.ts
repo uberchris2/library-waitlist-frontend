@@ -13,6 +13,8 @@ const environmentFileContent = `export const environment = {
         messagingSenderId: '346705633941',
         measurementId: 'G-J92GC4CZ5N',
     },
+    siteName: 'Northeast Seattle Tool Library',
+    headerClass: 'bg-primary',
 };
 `;
 

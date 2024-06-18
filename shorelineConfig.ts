@@ -12,7 +12,10 @@ const environmentFileContent = `export const environment = {
         authDomain: 'waitlist-shoreline.web.app',
         messagingSenderId: '349825777508',
         measurementId: 'G-0V6P6Q9RTV',
+        siteName: 'Shoreline Tool Library',
     },
+    siteName: 'Shoreline Tool Library',
+    headerClass: 'bg-success',
 };
 `;
 
