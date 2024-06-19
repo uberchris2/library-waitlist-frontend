@@ -15,6 +15,7 @@ const environmentFileContent = `export const environment = {
     },
     siteName: 'Northeast Seattle Tool Library',
     headerClass: 'bg-primary',
+    openDays: [0, 2, 4, 6],
 };
 `;
 
