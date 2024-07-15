@@ -14,7 +14,6 @@ import { CategoryWithCounts } from '../category-with-counts';
 })
 export class CategoriesComponent {
   category$: Observable<CategoryWithCounts[]>;
-  waitHold$: Observable<WaitHold[]>;
   categoriesCollection: CollectionReference;
   waitHoldCollection: CollectionReference;
   newCategoryName = "";
@@ -27,8 +26,8 @@ export class CategoriesComponent {
     this.waitHoldCollection = collection(firestore, 'wait-holds');
     let unfilteredCategories$ = (collectionData(this.categoriesCollection, { idField: "id" }) as Observable<Category[]>);
     const whQuery = query(this.waitHoldCollection, where("status", "in", ["Waiting", "Holding"]));
-    this.waitHold$ = (collectionData(whQuery) as Observable<WaitHold[]>);
-    this.category$ = combineLatest([unfilteredCategories$, this.searchTerm$, this.waitHold$]).pipe(
+    let waitHold = (collectionData(whQuery) as Observable<WaitHold[]>);
+    this.category$ = combineLatest([unfilteredCategories$, this.searchTerm$, waitHold]).pipe(
       map(([categories, term, waitHolds]) => {
         let categoriesWithCounts = categories.map(category => <CategoryWithCounts>{id: category.id, holding: 0, waiting: 0})
         for (let waitHold of waitHolds) {
@@ -40,9 +39,7 @@ export class CategoriesComponent {
             category.waiting++;
           }
         }
-        let filteredCategories = categoriesWithCounts.filter(category => category.id.toLowerCase().includes(term.toLowerCase()))
-        
-        return filteredCategories;
+        return categoriesWithCounts.filter(category => category.id.toLowerCase().includes(term.toLowerCase()))
       })
     );
     

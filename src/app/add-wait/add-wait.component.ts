@@ -52,7 +52,9 @@ export class AddWaitComponent {
   }
 
   createWaitHold() {
-    addDoc(this.waitHoldsCollection, this.waitHold);
+    addDoc(this.waitHoldsCollection, this.waitHold).then(() => {
+      this.router.navigate(['category', this.waitHold.category])
+    });
   }
 
   memberSelected(event: NgbTypeaheadSelectItemEvent) {
