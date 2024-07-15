@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, Subscription, combineLatest, first, map } 
 import { deleteDoc } from '@angular/fire/firestore';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
+import { CategoryWithCounts } from '../category-with-counts';
 
 @Component({
   selector: 'app-categories',
@@ -12,7 +13,8 @@ import { WaitHold } from '../wait-hold';
   styleUrls: ['./categories.component.css']
 })
 export class CategoriesComponent {
-  category$: Observable<Category[]>;
+  category$: Observable<CategoryWithCounts[]>;
+  waitHold$: Observable<WaitHold[]>;
   categoriesCollection: CollectionReference;
   waitHoldCollection: CollectionReference;
   newCategoryName = "";
@@ -23,12 +25,27 @@ export class CategoriesComponent {
   constructor(private firestore: Firestore, private modalService: NgbModal) {
     this.categoriesCollection = collection(firestore, 'categories');
     this.waitHoldCollection = collection(firestore, 'wait-holds');
-    let unfilteredCategories$ = (collectionData(this.categoriesCollection, { idField: "id" }) as Observable<Category[]>).pipe(
-      // map(catArr => catArr.sort((catA, catB) => (catB.holding + catB.waiting) - (catA.holding + catA.waiting)))
+    let unfilteredCategories$ = (collectionData(this.categoriesCollection, { idField: "id" }) as Observable<Category[]>);
+    const whQuery = query(this.waitHoldCollection, where("status", "in", ["Waiting", "Holding"]));
+    this.waitHold$ = (collectionData(whQuery) as Observable<WaitHold[]>);
+    this.category$ = combineLatest([unfilteredCategories$, this.searchTerm$, this.waitHold$]).pipe(
+      map(([categories, term, waitHolds]) => {
+        let categoriesWithCounts = categories.map(category => <CategoryWithCounts>{id: category.id, holding: 0, waiting: 0})
+        for (let waitHold of waitHolds) {
+          let category = categoriesWithCounts.find(category => category.id == waitHold.category)
+          if (waitHold.status == "Holding") {
+            category.holding++;
+          }
+          if (waitHold.status == "Waiting") {
+            category.waiting++;
+          }
+        }
+        let filteredCategories = categoriesWithCounts.filter(category => category.id.toLowerCase().includes(term.toLowerCase()))
+        
+        return filteredCategories;
+      })
     );
-    this.category$ = combineLatest([unfilteredCategories$, this.searchTerm$]).pipe(
-      map(([categories, term]) => categories.filter(category => category.id.toLowerCase().includes(term.toLowerCase())))
-    );
+    
   }
 
   ngOnDestroy(): void {
@@ -36,7 +53,7 @@ export class CategoriesComponent {
   }
 
   createCategory() {
-    setDoc(doc(this.categoriesCollection, this.newCategoryName), <Category>{ id: this.newCategoryName, holding: 0, waiting: 0 })
+    setDoc(doc(this.categoriesCollection, this.newCategoryName), <Category>{ id: this.newCategoryName })
       .then(() => this.newCategoryName = "");
   }
 

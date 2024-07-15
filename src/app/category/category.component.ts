@@ -54,13 +54,13 @@ export class CategoryComponent {
   startHold(waitHold: WaitHold) {
     waitHold.status = "Holding";
     waitHold.holdExpiration = DateHelpers.getExpirationDate();
-    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold, -1, 1);
+    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold);
   }
 
   cancelWaitHold(waitHold: WaitHold) {
     const wasHold = waitHold.status == "Holding";
     waitHold.status = "Cancelled";
-    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold, wasHold ? 0 : -1, wasHold ? -1 : 0);
+    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold);
   }
 
   demoteHold(waitHold: WaitHold) {
@@ -68,11 +68,11 @@ export class CategoryComponent {
     waitHold.status = "Waiting";
     waitHold.created = new Date();
     waitHold.holdExpiration = null;
-    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold, wasHold ? 1 : 0, wasHold ? -1 : 0);
+    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold);
   }
 
   pickupHold(waitHold: WaitHold) {
     waitHold.status = "Completed";
-    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold, 0, -1);
+    HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold);
   }
 }

@@ -52,16 +52,7 @@ export class AddWaitComponent {
   }
 
   createWaitHold() {
-    addDoc(this.waitHoldsCollection, this.waitHold).then(() => {
-      const categoryReference = doc<DocumentData>(this.categoriesCollection, this.waitHold.category);
-      this.subscriptions.push(docData(categoryReference).pipe(first()).subscribe(cat => {
-        var updatedCategory = cat as Category;
-        updatedCategory.waiting = updatedCategory.waiting + 1;
-        setDoc(categoryReference, updatedCategory).then(() => {
-          this.router.navigate(['category', this.waitHold.category])
-        });
-      }));
-    });
+    addDoc(this.waitHoldsCollection, this.waitHold);
   }
 
   memberSelected(event: NgbTypeaheadSelectItemEvent) {
