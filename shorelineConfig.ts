@@ -17,6 +17,7 @@ const environmentFileContent = `export const environment = {
     siteName: 'Shoreline Tool Library',
     headerClass: 'bg-success',
     openDays: [1, 3, 5, 6],
+    production: true,
 };
 `;
 

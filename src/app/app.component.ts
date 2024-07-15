@@ -23,7 +23,7 @@ export class AppComponent {
         provider.addScope("https://www.googleapis.com/auth/cloud-platform");
         provider.addScope("https://www.googleapis.com/auth/datastore");
         var auth = getAuth();
-        isFirefox ? signInWithPopup(auth, provider) : signInWithRedirect(auth, provider);
+        isFirefox || !environment.production ? signInWithPopup(auth, provider) : signInWithRedirect(auth, provider);
       }
     });
   }
