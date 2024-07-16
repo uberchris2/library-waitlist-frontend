@@ -68,23 +68,31 @@ export class UpdateUsersComponent {
     this.subscriptions.push(collectionData(membersCollection, { idField: "id" }).pipe(first())
       .subscribe(oldMembers => {
         if (oldMembers.length) {
-          this.deleteMember(membersCollection, oldMembers)
+          this.deleteMember(membersCollection, oldMembers, newMembers)
+        } else {
+          this.updateProgress("Importing new member list", 50);
+          this.addMembers(membersCollection, newMembers);
         }
-        this.updateProgress("Importing new member list", 50);
-        this.addMembers(membersCollection, newMembers);
       }));
   }
 
-  private deleteMember(membersCollection: CollectionReference, oldMembers: any[]) {
-    var member = oldMembers.pop();
-    if (member == undefined) return;
-    var categoryReference = doc<DocumentData>(membersCollection, member['id']);
-    deleteDoc(categoryReference).then(() => {
-      this.deleteMember(membersCollection, oldMembers);
-    });
+  private deleteMember(membersCollection: CollectionReference, oldMembers: any[], newMembers: any[]) {
+    if (oldMembers.length == 0) {
+      this.updateProgress("Importing new member list", 50);
+      this.addMembers(membersCollection, newMembers);
+      return;
+    }
+    var batch = writeBatch(this.firestore);
+    for (var i = 0; i < 250; i++) {
+      var oldMember = oldMembers.shift();
+      if (oldMember == undefined) break;
+      var memberReference = doc<DocumentData>(membersCollection, oldMember['id']);
+      batch.delete(memberReference);
+    }
+    batch.commit().then(() => this.deleteMember(membersCollection, oldMembers, newMembers));
   }
 
-  private addMembers(membersCollection: CollectionReference, newMembers: any[]) {
+   private addMembers(membersCollection: CollectionReference, newMembers: any[]) {
     if (newMembers.length == 0) {
       this.updateProgress("Done", 100);
       return;
@@ -98,4 +106,3 @@ export class UpdateUsersComponent {
     batch.commit().then(() => this.addMembers(membersCollection, newMembers));
   }
 }
-
