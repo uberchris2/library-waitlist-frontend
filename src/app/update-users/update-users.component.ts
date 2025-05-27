@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { CollectionReference, DocumentData, Firestore, collection, collectionData, deleteDoc, doc, writeBatch } from '@angular/fire/firestore';
+import { CollectionReference, Firestore, collection, collectionData, deleteDoc, doc, writeBatch } from '@angular/fire/firestore';
 import { NgxCSVParserError, NgxCsvParser } from 'ngx-csv-parser';
+import { DocumentData } from 'rxfire/firestore/interfaces';
 import { Subscription, first } from 'rxjs';
 
 @Component({
@@ -86,7 +87,7 @@ export class UpdateUsersComponent {
     for (var i = 0; i < 250; i++) {
       var oldMember = oldMembers.shift();
       if (oldMember == undefined) break;
-      var memberReference = doc<DocumentData>(membersCollection, oldMember['id']);
+      let memberReference = doc<DocumentData, DocumentData>(membersCollection, oldMember['id']);
       batch.delete(memberReference);
     }
     batch.commit().then(() => this.deleteMember(membersCollection, oldMembers, newMembers));

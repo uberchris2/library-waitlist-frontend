@@ -39,7 +39,7 @@ export class EditWaitComponent {
   ngOnInit(): void {
     this.subscriptions.push(this.route.paramMap.subscribe((params: ParamMap) => {
       var waitHoldId = String(params.get('waitHoldId'));
-      this.subscriptions.push(docData(doc<DocumentData>(this.waitHoldsCollection, waitHoldId), { idField: 'id' })
+      this.subscriptions.push(docData(doc<DocumentData, DocumentData>(this.waitHoldsCollection, waitHoldId), { idField: 'id' })
         .pipe(RxHelpers.fixWaitHoldDate)
         .subscribe(wh => this.waitHold = wh as WaitHold));
     }));
@@ -50,7 +50,7 @@ export class EditWaitComponent {
   }
 
   updateWaitHold() {
-    setDoc(doc<DocumentData>(this.waitHoldsCollection, this.waitHold.id), this.waitHold).then(() => {
+    setDoc(doc<DocumentData, DocumentData>(this.waitHoldsCollection, this.waitHold.id), this.waitHold).then(() => {
       this.router.navigate(['category', this.waitHold.category])
     });
   }
