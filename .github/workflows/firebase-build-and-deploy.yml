@@ -2,9 +2,9 @@ name: Deploy to Firebase Hosting
 
 on:
   push:
-    branches: ["master", "angular-18"]
+    branches: ["master"]
   pull_request:
-    branches: ["master", "angular-18"]
+    branches: ["master"]
 
 jobs:
   build-deploy:
