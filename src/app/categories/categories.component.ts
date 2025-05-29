@@ -57,7 +57,7 @@ export class CategoriesComponent {
   deleteCategory(category: Category, deleteCategoryConfirm: any) {
     this.modalService.open(deleteCategoryConfirm).result.then(() => {
       // delete category
-      var categoryReference = doc<DocumentData>(this.categoriesCollection, category.id);
+      var categoryReference = doc<DocumentData, DocumentData>(this.categoriesCollection, category.id);
       deleteDoc(categoryReference);
       // cancel holds for category
       const whQuery = query(this.waitHoldCollection, where("category", "==", category.id));
@@ -65,7 +65,7 @@ export class CategoriesComponent {
         for (var wh of whArr) {
           wh.status = 'Category Removed';
           wh.updated = new Date();
-          const waitHoldReference = doc<DocumentData>(this.waitHoldCollection, wh.id);
+          const waitHoldReference = doc<DocumentData, DocumentData>(this.waitHoldCollection, wh.id);
           setDoc(waitHoldReference, wh);
         }
       }));
