@@ -4,13 +4,17 @@ import { Firestore, collectionData, collection, addDoc, CollectionReference, doc
 import { Observable, OperatorFunction, Subscription, debounceTime, distinctUntilChanged, map } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
 import { RxHelpers } from '../rx-helpers';
+import { NgIf, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-edit-wait',
-  templateUrl: './edit-wait.component.html',
-  styleUrls: ['./edit-wait.component.css']
+    selector: 'app-edit-wait',
+    templateUrl: './edit-wait.component.html',
+    styleUrls: ['./edit-wait.component.css'],
+    standalone: true,
+    imports: [FormsModule, NgIf, RouterLink, DatePipe]
 })
 export class EditWaitComponent {
   public waitHold: WaitHold = {
@@ -39,7 +43,7 @@ export class EditWaitComponent {
   ngOnInit(): void {
     this.subscriptions.push(this.route.paramMap.subscribe((params: ParamMap) => {
       var waitHoldId = String(params.get('waitHoldId'));
-      this.subscriptions.push(docData(doc<DocumentData, DocumentData>(this.waitHoldsCollection, waitHoldId), { idField: 'id' })
+      this.subscriptions.push(docData(doc(this.waitHoldsCollection, waitHoldId), { idField: 'id' })
         .pipe(RxHelpers.fixWaitHoldDate)
         .subscribe(wh => this.waitHold = wh as WaitHold));
     }));
@@ -50,7 +54,7 @@ export class EditWaitComponent {
   }
 
   updateWaitHold() {
-    setDoc(doc<DocumentData, DocumentData>(this.waitHoldsCollection, this.waitHold.id), this.waitHold).then(() => {
+    setDoc(doc(this.waitHoldsCollection, this.waitHold.id), this.waitHold).then(() => {
       this.router.navigate(['category', this.waitHold.category])
     });
   }

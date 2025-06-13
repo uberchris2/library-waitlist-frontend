@@ -3,11 +3,15 @@ import { CollectionReference, Firestore, collection, collectionData, deleteDoc, 
 import { NgxCSVParserError, NgxCsvParser } from 'ngx-csv-parser';
 import { DocumentData } from 'rxfire/firestore/interfaces';
 import { Subscription, first } from 'rxjs';
+import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-update-users',
-  templateUrl: './update-users.component.html',
-  styleUrls: ['./update-users.component.css']
+    selector: 'app-update-users',
+    templateUrl: './update-users.component.html',
+    styleUrls: ['./update-users.component.css'],
+    standalone: true,
+    imports: [NgIf, NgbProgressbar]
 })
 export class UpdateUsersComponent {
   fileToUpload: File | null = null;
@@ -87,7 +91,7 @@ export class UpdateUsersComponent {
     for (var i = 0; i < 250; i++) {
       var oldMember = oldMembers.shift();
       if (oldMember == undefined) break;
-      let memberReference = doc<DocumentData, DocumentData>(membersCollection, oldMember['id']);
+      var memberReference = doc(membersCollection, oldMember['id']);
       batch.delete(memberReference);
     }
     batch.commit().then(() => this.deleteMember(membersCollection, oldMembers, newMembers));

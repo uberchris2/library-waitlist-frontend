@@ -2,11 +2,16 @@ import { Component } from '@angular/core';
 import { Auth, signInWithRedirect, user, User } from '@angular/fire/auth';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from '@firebase/auth';
 import { environment } from 'src/environments/environment';
+import { NgIf } from '@angular/common';
+import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styles: []
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styles: [],
+    standalone: true,
+    imports: [RouterLink, NgbCollapse, RouterLinkActive, NgIf, RouterOutlet]
 })
 export class AppComponent {
   isNavbarCollapsed = true;
