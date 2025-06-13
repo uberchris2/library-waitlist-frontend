@@ -90,7 +90,7 @@ export class UpdateUsersComponent {
     for (var i = 0; i < 250; i++) {
       var oldMember = oldMembers.shift();
       if (oldMember == undefined) break;
-      var memberReference = doc<DocumentData>(membersCollection, oldMember['id']);
+      var memberReference = doc(membersCollection, oldMember['id']);
       batch.delete(memberReference);
     }
     batch.commit().then(() => this.deleteMember(membersCollection, oldMembers, newMembers));

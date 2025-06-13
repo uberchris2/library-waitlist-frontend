@@ -1,8 +1,6 @@
 /// <reference types="@angular/localize" />
 
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-
 import { importProvidersFrom } from '@angular/core';
 import { AppComponent } from './app/app.component';
 import { ClipboardModule } from 'ngx-clipboard';
@@ -16,8 +14,19 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app/app-routing.module';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 
-
 bootstrapApplication(AppComponent, {
-    providers: [importProvidersFrom(BrowserModule, AppRoutingModule, NgbModule, FormsModule, provideFirebaseApp(() => initializeApp(environment.firebase)), provideAuth(() => getAuth()), provideFirestore(() => getFirestore()), NgxCsvParserModule, ClipboardModule)]
+    providers: [
+        importProvidersFrom(
+            BrowserModule,
+            AppRoutingModule,
+            NgbModule,
+            FormsModule,
+            NgxCsvParserModule,
+            ClipboardModule
+        ),
+        provideFirebaseApp(() => initializeApp(environment.firebase)),
+        provideAuth(() => getAuth()),
+        provideFirestore(() => getFirestore())
+    ]
 })
   .catch(err => console.error(err));
