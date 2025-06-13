@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { CollectionReference, DocumentData, Firestore, collection, collectionData, deleteDoc, doc, writeBatch } from '@angular/fire/firestore';
+import { CollectionReference, Firestore, collection, collectionData, deleteDoc, doc, writeBatch } from '@angular/fire/firestore';
 import { NgxCSVParserError, NgxCsvParser } from 'ngx-csv-parser';
+import { DocumentData } from 'rxfire/firestore/interfaces';
 import { Subscription, first } from 'rxjs';
 import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
 import { NgIf } from '@angular/common';

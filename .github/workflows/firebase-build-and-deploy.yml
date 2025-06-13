@@ -2,26 +2,28 @@ name: Deploy to Firebase Hosting
 
 on:
   push:
-    branches: ["master"]
+    branches: ["master", "angular-18"]
   pull_request:
-    branches: ["master"]
+    branches: ["master", "angular-18"]
 
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 22
           cache: "npm"
       - run: npm install
       - run: npm run config-nestl
         env:
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
       - run: npm run build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Deploy to Firebase (waitlist-firebase)
+        if: github.ref == 'refs/heads/master'
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_WAITLIST_FIREBASE }}'
@@ -32,7 +34,9 @@ jobs:
         env:
           FIREBASE_SHORELINE_API_KEY: ${{ secrets.FIREBASE_SHORELINE_API_KEY }}
       - run: npm run build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Deploy to Firebase (waitlist-shoreline)
+        if: github.ref == 'refs/heads/master'
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_WAITLIST_FIREBASE }}'
