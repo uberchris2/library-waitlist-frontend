@@ -97,10 +97,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "library-waitlist:build:production"
+              "buildTarget": "library-waitlist:build:production"
             },
             "development": {
-              "browserTarget": "library-waitlist:build:development"
+              "buildTarget": "library-waitlist:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -108,7 +108,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "library-waitlist:build"
+            "buildTarget": "library-waitlist:build"
           }
         },
         "deploy": {
