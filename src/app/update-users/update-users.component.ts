@@ -2,11 +2,15 @@ import { Component } from '@angular/core';
 import { CollectionReference, DocumentData, Firestore, collection, collectionData, deleteDoc, doc, writeBatch } from '@angular/fire/firestore';
 import { NgxCSVParserError, NgxCsvParser } from 'ngx-csv-parser';
 import { Subscription, first } from 'rxjs';
+import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-update-users',
-  templateUrl: './update-users.component.html',
-  styleUrls: ['./update-users.component.css']
+    selector: 'app-update-users',
+    templateUrl: './update-users.component.html',
+    styleUrls: ['./update-users.component.css'],
+    standalone: true,
+    imports: [NgIf, NgbProgressbar]
 })
 export class UpdateUsersComponent {
   fileToUpload: File | null = null;

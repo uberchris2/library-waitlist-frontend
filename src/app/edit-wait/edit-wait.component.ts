@@ -4,13 +4,17 @@ import { Firestore, collectionData, collection, addDoc, CollectionReference, doc
 import { Observable, OperatorFunction, Subscription, debounceTime, distinctUntilChanged, map } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
 import { RxHelpers } from '../rx-helpers';
+import { NgIf, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-edit-wait',
-  templateUrl: './edit-wait.component.html',
-  styleUrls: ['./edit-wait.component.css']
+    selector: 'app-edit-wait',
+    templateUrl: './edit-wait.component.html',
+    styleUrls: ['./edit-wait.component.css'],
+    standalone: true,
+    imports: [FormsModule, NgIf, RouterLink, DatePipe]
 })
 export class EditWaitComponent {
   public waitHold: WaitHold = {

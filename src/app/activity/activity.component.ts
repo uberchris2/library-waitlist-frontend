@@ -1,16 +1,19 @@
 import { Component } from '@angular/core';
 import { Firestore, collectionData, collection, CollectionReference, query, orderBy, limit } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RxHelpers } from '../rx-helpers';
 import { HoldHelpers } from '../hold-helpers';
+import { NgFor, NgIf, AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-activity',
-  templateUrl: './activity.component.html',
-  styleUrls: ['./activity.component.css']
+    selector: 'app-activity',
+    templateUrl: './activity.component.html',
+    styleUrls: ['./activity.component.css'],
+    standalone: true,
+    imports: [NgFor, NgIf, NgbPopover, AsyncPipe, DatePipe]
 })
 export class ActivityComponent {
   waitHoldCollection: CollectionReference;

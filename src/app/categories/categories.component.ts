@@ -3,14 +3,19 @@ import { Category } from '../category';
 import { Firestore, collectionData, collection, CollectionReference, doc, DocumentData, setDoc, query, where } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable, Subscription, combineLatest, first, map } from 'rxjs';
 import { deleteDoc } from '@angular/fire/firestore';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
 import { CategoryWithCounts } from '../category-with-counts';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-categories',
-  templateUrl: './categories.component.html',
-  styleUrls: ['./categories.component.css']
+    selector: 'app-categories',
+    templateUrl: './categories.component.html',
+    styleUrls: ['./categories.component.css'],
+    standalone: true,
+    imports: [NgIf, NgFor, RouterLink, NgbPopover, FormsModule, AsyncPipe]
 })
 export class CategoriesComponent {
   category$: Observable<CategoryWithCounts[]>;

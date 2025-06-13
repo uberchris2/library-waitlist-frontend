@@ -2,15 +2,19 @@ import { Component } from '@angular/core';
 import { Category } from '../category';
 import { Firestore, collectionData, collection, addDoc, CollectionReference, docData, setDoc, doc, DocumentData, query, where, limit } from '@angular/fire/firestore';
 import { Observable, OperatorFunction, Subscription, catchError, debounceTime, distinctUntilChanged, first, map, of, switchMap } from 'rxjs';
-import { NgbModal, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbTypeaheadSelectItemEvent, NgbTypeahead, NgbHighlight } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
 import { Member } from '../member';
+import { NgFor, AsyncPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-add-wait',
-  templateUrl: './add-wait.component.html',
-  styleUrls: ['./add-wait.component.css']
+    selector: 'app-add-wait',
+    templateUrl: './add-wait.component.html',
+    styleUrls: ['./add-wait.component.css'],
+    standalone: true,
+    imports: [FormsModule, NgFor, NgbTypeahead, RouterLink, NgbHighlight, AsyncPipe]
 })
 export class AddWaitComponent {
   public waitHold: WaitHold = {
