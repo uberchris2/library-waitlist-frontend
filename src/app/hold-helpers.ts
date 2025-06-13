@@ -4,7 +4,7 @@ import { WaitHold } from "./wait-hold";
 export class HoldHelpers {
 
   public static updateWaitHold(waitHoldCollection: CollectionReference, categoriesCollection: CollectionReference, waitHold: WaitHold) {
-    const waitHoldReference = doc<DocumentData, DocumentData>(waitHoldCollection, waitHold.id);
+    const waitHoldReference = doc(waitHoldCollection, waitHold.id);
     waitHold.updated = new Date();
     return setDoc(waitHoldReference, waitHold);
   }

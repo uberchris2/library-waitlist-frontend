@@ -1,17 +1,21 @@
 import { Component } from '@angular/core';
 import { Firestore, collectionData, collection, CollectionReference, query, where } from '@angular/fire/firestore';
 import { EMPTY, Observable, Subscription, map } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, RouterLink } from '@angular/router';
 import { RxHelpers } from '../rx-helpers';
 import { DateHelpers } from '../date-helpers';
 import { HoldHelpers } from '../hold-helpers';
+import { ClipboardModule } from 'ngx-clipboard';
+import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-category',
-  templateUrl: './category.component.html',
-  styleUrls: ['./category.component.css']
+    selector: 'app-category',
+    templateUrl: './category.component.html',
+    styleUrls: ['./category.component.css'],
+    standalone: true,
+    imports: [RouterLink, NgbPopover, NgIf, NgFor, ClipboardModule, AsyncPipe, DatePipe]
 })
 export class CategoryComponent {
   waitHold$: Observable<WaitHold[]> = EMPTY;
