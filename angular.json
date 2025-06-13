@@ -41,7 +41,8 @@
           "builder": "@angular/build:application",
           "options": {
             "outputPath": {
-              "base": "dist/library-waitlist"
+              "base": "dist/library-waitlist",
+              "browser": ""
             },
             "index": "src/index.html",
             "polyfills": [

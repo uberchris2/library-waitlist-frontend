@@ -2,9 +2,9 @@ name: Deploy to Firebase Hosting
 
 on:
   push:
-    branches: ["master", "angular-18"]
+    branches: ["master"]
   pull_request:
-    branches: ["master", "angular-18"]
+    branches: ["master"]
 
 jobs:
   build-deploy:
@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 22
           cache: "npm"
-      - run: npm install
+      - run: npm ci
       - run: npm run config-nestl
         env:
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
