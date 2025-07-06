@@ -1,0 +1,151 @@
+import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
+import * as nodemailer from 'nodemailer';
+import * as cors from 'cors';
+
+// Initialize Firebase Admin
+admin.initializeApp();
+
+// CORS configuration
+const corsHandler = cors({
+  origin: [
+    'http://localhost:4200',
+    'http://localhost:3000',
+    'https://waitlist-firebase.web.app',
+    'https://waitlist-shoreline.web.app'
+  ],
+  credentials: true
+});
+
+// Email configuration - Use mock for emulator, real for production
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    type: 'OAuth2',
+    user: functions.config().email?.user || process.env.EMAIL_USER,
+    clientId: functions.config().email?.client_id || process.env.EMAIL_CLIENT_ID,
+    clientSecret: functions.config().email?.client_secret || process.env.EMAIL_CLIENT_SECRET,
+    refreshToken: functions.config().email?.refresh_token || process.env.EMAIL_REFRESH_TOKEN,
+    accessToken: functions.config().email?.access_token || process.env.EMAIL_ACCESS_TOKEN,
+  },
+});
+
+// Mock transporter for emulator testing
+const mockTransporter = {
+  sendMail: async (mailOptions: any) => {
+    console.log('📧 MOCK EMAIL SENT:', {
+      to: mailOptions.to,
+      subject: mailOptions.subject,
+      text: mailOptions.text
+    });
+    return { messageId: 'mock-message-id-' + Date.now() };
+  }
+};
+
+// Interface for email data
+interface EmailData {
+  to: string;
+  subject: string;
+  body: string;
+  from?: string;
+}
+
+// Function to send emails
+export const sendEmail = functions.https.onCall(async (request: any) => {
+  const { data, auth } = request;
+  
+  // Check if user is authenticated
+  if (!auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+  }
+
+  const emailData = data as EmailData;
+
+  try {
+    const mailOptions = {
+      from: emailData.from || functions.config().email?.user || process.env.EMAIL_USER,
+      to: emailData.to,
+      subject: emailData.subject,
+      text: emailData.body,
+      html: emailData.body.replace(/\n/g, '<br>'), // Convert newlines to HTML breaks
+    };
+
+    // Use mock transporter in emulator, real transporter in production
+    const emailTransporter = process.env.FUNCTIONS_EMULATOR ? mockTransporter : transporter;
+    const result = await emailTransporter.sendMail(mailOptions);
+    
+    // Log the email send attempt
+    await admin.firestore().collection('email_logs').add({
+      to: emailData.to,
+      subject: emailData.subject,
+      sentAt: admin.firestore.FieldValue.serverTimestamp(),
+      success: true,
+      messageId: result.messageId,
+      userId: auth.uid,
+    });
+
+    return { success: true, messageId: result.messageId };
+  } catch (error) {
+    console.error('Error sending email:', error);
+    
+    // Log the error
+    await admin.firestore().collection('email_logs').add({
+      to: emailData.to,
+      subject: emailData.subject,
+      sentAt: admin.firestore.FieldValue.serverTimestamp(),
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      userId: auth.uid,
+    });
+
+    throw new functions.https.HttpsError('internal', 'Failed to send email');
+  }
+});
+
+// Alternative HTTP function with CORS support for testing
+export const sendEmailHttp = functions.https.onRequest((req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      // For testing purposes, you can bypass auth check
+      const emailData = req.body as EmailData;
+      
+      const mailOptions = {
+        from: emailData.from || functions.config().email?.user || process.env.EMAIL_USER,
+        to: emailData.to,
+        subject: emailData.subject,
+        text: emailData.body,
+        html: emailData.body.replace(/\n/g, '<br>'),
+      };
+
+      // Use mock transporter in emulator, real transporter in production
+      const emailTransporter = process.env.FUNCTIONS_EMULATOR ? mockTransporter : transporter;
+      const result = await emailTransporter.sendMail(mailOptions);
+      
+      // Log the email send attempt
+      await admin.firestore().collection('email_logs').add({
+        to: emailData.to,
+        subject: emailData.subject,
+        sentAt: admin.firestore.FieldValue.serverTimestamp(),
+        success: true,
+        messageId: result.messageId,
+        userId: 'test-user', // For testing
+      });
+
+      res.json({ success: true, messageId: result.messageId });
+    } catch (error) {
+      console.error('Error sending email:', error);
+      
+      // Log the error
+      await admin.firestore().collection('email_logs').add({
+        to: req.body?.to || 'unknown',
+        subject: req.body?.subject || 'unknown',
+        sentAt: admin.firestore.FieldValue.serverTimestamp(),
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        userId: 'test-user',
+      });
+
+      res.status(500).json({ success: false, error: 'Failed to send email' });
+    }
+  });
+}); 
