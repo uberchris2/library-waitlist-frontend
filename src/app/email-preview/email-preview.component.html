@@ -1,0 +1,29 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{ title }}</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="onCancel()"></button>
+</div>
+<div class="modal-body">
+    <form>
+        <div class="mb-3" *ngIf="showFromField">
+            <label for="emailFrom" class="form-label">From:</label>
+            <input type="email" class="form-control" id="emailFrom" [(ngModel)]="emailData.from" name="emailFrom">
+        </div>
+        <div class="mb-3">
+            <label for="emailTo" class="form-label">To:</label>
+            <input type="email" class="form-control" id="emailTo" [(ngModel)]="emailData.to" name="emailTo">
+        </div>
+        <app-auth-status></app-auth-status>
+        <div class="mb-3">
+            <label for="emailSubject" class="form-label">Subject:</label>
+            <input type="text" class="form-control" id="emailSubject" [(ngModel)]="emailData.subject" name="emailSubject">
+        </div>
+        <div class="mb-3">
+            <label for="emailBody" class="form-label">Message:</label>
+            <textarea class="form-control" id="emailBody" rows="8" [(ngModel)]="emailData.body" name="emailBody"></textarea>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="onSendEmail()">Send Email</button>
+</div> 
