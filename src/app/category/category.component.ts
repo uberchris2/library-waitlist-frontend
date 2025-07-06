@@ -31,6 +31,7 @@ export class CategoryComponent {
   
   // Remove emailPreview and emailPreviewComponent properties
   selectedWaitHold: WaitHold | null = null;
+  canPreviewEmail = false;
 
   constructor(
     private firestore: Firestore, 
@@ -61,6 +62,10 @@ export class CategoryComponent {
         }))
       );
     }));
+    // Check if sendEmail is available
+    this.emailService.isSendEmailAvailable().then(available => {
+      this.canPreviewEmail = available;
+    });
   }
 
   ngOnDestroy(): void {
@@ -73,7 +78,7 @@ export class CategoryComponent {
     waitHold.holdExpiration = DateHelpers.getExpirationDate();
     HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold);
     // Then open the email preview modal
-    this.previewHoldNotificationEmail(waitHold);
+    this.canPreviewEmail &&this.previewHoldNotificationEmail(waitHold);
   }
 
   previewHoldNotificationEmail(waitHold: WaitHold) {

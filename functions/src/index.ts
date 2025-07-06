@@ -48,6 +48,7 @@ interface EmailData {
   subject: string;
   body: string;
   from?: string;
+  check?: boolean; // Added for check functionality
 }
 
 // Function to send emails
@@ -60,6 +61,11 @@ export const sendEmail = functions.https.onCall(async (request: any) => {
   }
 
   const emailData = data as EmailData;
+
+  // If this is a check request, just return available: true
+  if (data && data.check) {
+    return { available: true };
+  }
 
   try {
     const mailOptions = {
