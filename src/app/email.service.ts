@@ -34,19 +34,9 @@ export class EmailService {
     );
     
     try {
-      console.log('Attempting to send email...');
-      console.log('Email data:', emailData);
-      
       const result = await sendEmailFunction(emailData);
-      console.log('Email sent successfully:', result.data);
       return result.data;
     } catch (error: any) {
-      console.error('Error sending email:', error);
-      console.error('Error details:', {
-        code: error.code,
-        message: error.message,
-        details: error.details
-      });
       
       // Handle different error types
       let errorMessage = 'Failed to send email';
