@@ -11,8 +11,7 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
 import { EmailService } from '../email.service';
 import { EmailPreviewComponent, EmailData } from '../email-preview/email-preview.component';
-import { AuthStatusComponent } from '../auth-status/auth-status.component';
-import { AuthTestComponent } from '../auth-test/auth-test.component';
+import { ConfigService } from '../config.service';
 
 @Component({
     selector: 'app-category',
@@ -37,7 +36,8 @@ export class CategoryComponent {
     private firestore: Firestore, 
     private route: ActivatedRoute,
     private emailService: EmailService,
-    private modalService: NgbModal // <-- add this
+    private modalService: NgbModal,
+    private configService: ConfigService
   ) {
     this.waitHoldCollection = collection(firestore, 'wait-holds');
     this.categoriesCollection = collection(firestore, 'categories');
@@ -63,9 +63,13 @@ export class CategoryComponent {
       );
     }));
     // Check if sendEmail is available
-    this.emailService.isSendEmailAvailable().then(available => {
-      this.canPreviewEmail = available;
-    });
+    if (!this.configService.isProduction) {
+      this.canPreviewEmail = true;
+    } else {
+      this.emailService.isSendEmailAvailable().then(available => {
+        this.canPreviewEmail = available;
+      });
+    }
   }
 
   ngOnDestroy(): void {
@@ -76,17 +80,28 @@ export class CategoryComponent {
     // Update the hold status first
     waitHold.status = "Holding";
     waitHold.holdExpiration = DateHelpers.getExpirationDate();
+    waitHold.tool = this.categoryId;
+
     HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold);
     // Then open the email preview modal
-    this.canPreviewEmail &&this.previewHoldNotificationEmail(waitHold);
+    this.canPreviewEmail && this.previewHoldNotificationEmail(waitHold);
   }
 
   previewHoldNotificationEmail(waitHold: WaitHold) {
     this.selectedWaitHold = waitHold;
+    waitHold.tool = waitHold.tool ?? 'reserved tool';
     const emailPreview: EmailData = {
       to: waitHold.email,
-      subject: `Hold for ${waitHold.tool} in ${waitHold.category}`,
-      body: `Hello ${waitHold.name},\n\nYou have a hold for ${waitHold.tool} in ${waitHold.category}.\n\nThank you,\nTool Library Team`
+      subject: `${waitHold.tool} on hold at ${this.configService.siteName || "the tool library"}`,
+
+      body: `
+      Hello ${waitHold.name},
+
+Your item , ${waitHold.tool}, is back in stock and on hold for you to pick up over the next two business days. We will hold your item through ${waitHold.holdExpiration.toDateString()}.  
+
+If you no longer need the item please let us know.
+ 
+Thanks!`
     };
 
     const modalRef = this.modalService.open(EmailPreviewComponent, {
