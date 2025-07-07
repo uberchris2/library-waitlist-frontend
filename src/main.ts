@@ -28,21 +28,21 @@ bootstrapApplication(AppComponent, {
         provideFirebaseApp(() => initializeApp(environment.firebase)),
         provideAuth(() => {
             const auth = getAuth();
-            if (!environment.production && environment.emulated) {
+            if (!environment.production ) {
                 connectAuthEmulator(auth, 'http://localhost:9099');
             }
             return auth;
         }),
         provideFirestore(() => {
             const firestore = getFirestore();
-            if (!environment.production && environment.emulated) {
+            if (!environment.production ) {
                 connectFirestoreEmulator(firestore, 'localhost', 8080);
             }
             return firestore;
         }),
         provideFunctions(() => {
             const functions = getFunctions();
-            if (!environment.production && environment.emulated) {
+            if (!environment.production) {
                 connectFunctionsEmulator(functions, 'localhost', 5001);
             }
             return functions;
