@@ -13,9 +13,6 @@ export class ConfigService {
     return environment.production;
   }
 
-  get isEmulated(): boolean {
-    return environment.emulated;
-  }
 
   get openDays(): number[] {
     return environment.openDays;
