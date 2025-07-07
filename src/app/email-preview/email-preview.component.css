@@ -1,0 +1,10 @@
+/* Email preview component styles */
+.modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 120px;
+} 

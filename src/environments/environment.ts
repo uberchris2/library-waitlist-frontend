@@ -12,5 +12,6 @@ export const environment = {
     siteName: '',
     headerClass: '',
     openDays: [1],
-    production: true
+    production: true,
+    emulated: false,
 };

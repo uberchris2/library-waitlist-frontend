@@ -8,6 +8,7 @@
             Add</button>
     </div>
 </div>
+
 <table *ngIf="(waitHold$ | async)?.length" class="table">
     <thead>
         <tr>
@@ -59,3 +60,5 @@
 </table>
 <div *ngIf="(waitHold$ | async)?.length == 0" class="text-center">There are currently no members waiting for this
     category.</div>
+
+<!-- Email Preview Component -->

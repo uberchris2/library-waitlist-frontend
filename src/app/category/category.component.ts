@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Firestore, collectionData, collection, CollectionReference, query, where } from '@angular/fire/firestore';
 import { EMPTY, Observable, Subscription, map } from 'rxjs';
-import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
+import { NgbPopover, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
 import { ActivatedRoute, ParamMap, RouterLink } from '@angular/router';
 import { RxHelpers } from '../rx-helpers';
@@ -9,6 +9,9 @@ import { DateHelpers } from '../date-helpers';
 import { HoldHelpers } from '../hold-helpers';
 import { ClipboardModule } from 'ngx-clipboard';
 import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
+import { EmailService } from '../email.service';
+import { EmailPreviewComponent, EmailData } from '../email-preview/email-preview.component';
+import { ConfigService } from '../config.service';
 
 @Component({
     selector: 'app-category',
@@ -24,8 +27,18 @@ export class CategoryComponent {
   categoryId = "";
   today = new Date();
   subscriptions: Subscription[] = [];
+  
+  // Remove emailPreview and emailPreviewComponent properties
+  selectedWaitHold: WaitHold | null = null;
+  canPreviewEmail = false;
 
-  constructor(private firestore: Firestore, private modalService: NgbModal, private route: ActivatedRoute) {
+  constructor(
+    private firestore: Firestore, 
+    private route: ActivatedRoute,
+    private emailService: EmailService,
+    private modalService: NgbModal,
+    private configService: ConfigService
+  ) {
     this.waitHoldCollection = collection(firestore, 'wait-holds');
     this.categoriesCollection = collection(firestore, 'categories');
   }
@@ -49,6 +62,14 @@ export class CategoryComponent {
         }))
       );
     }));
+    // Check if sendEmail is available
+    if (!this.configService.isProduction) {
+      this.canPreviewEmail = true;
+    } else {
+      this.emailService.isSendEmailAvailable().then(available => {
+        this.canPreviewEmail = available;
+      });
+    }
   }
 
   ngOnDestroy(): void {
@@ -56,9 +77,80 @@ export class CategoryComponent {
   }
 
   startHold(waitHold: WaitHold) {
+    // Update the hold status first
     waitHold.status = "Holding";
     waitHold.holdExpiration = DateHelpers.getExpirationDate();
+    waitHold.tool = this.categoryId;
+
     HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold);
+    // Then open the email preview modal
+    this.canPreviewEmail && this.previewHoldNotificationEmail(waitHold);
+  }
+
+  previewHoldNotificationEmail(waitHold: WaitHold) {
+    this.selectedWaitHold = waitHold;
+    waitHold.tool = waitHold.tool ?? 'reserved tool';
+    const emailPreview: EmailData = {
+      to: waitHold.email,
+      subject: `${waitHold.tool} on hold at ${this.configService.siteName || "the tool library"}`,
+
+      body: `
+      Hello ${waitHold.name},
+
+Your item , ${waitHold.tool}, is back in stock and on hold for you to pick up over the next two business days. We will hold your item through ${waitHold.holdExpiration.toDateString()}.  
+
+If you no longer need the item please let us know.
+ 
+Thanks!`
+    };
+
+    const modalRef = this.modalService.open(EmailPreviewComponent, {
+      size: 'lg',
+      backdrop: 'static',
+      keyboard: false
+    });
+    modalRef.componentInstance.emailData = emailPreview;
+    modalRef.componentInstance.title = 'Preview Hold Notification Email';
+    modalRef.componentInstance.sendEmail.subscribe((emailData: EmailData) => {
+      this.onSendEmail(emailData);
+      modalRef.close();
+    });
+    modalRef.componentInstance.cancel.subscribe(() => {
+      this.onCancelEmail();
+      modalRef.close();
+    });
+  }
+
+  async onSendEmail(emailData: EmailData) {
+    if (!this.selectedWaitHold) return;
+    
+    try {
+      // Send email with custom content first
+      const result = await this.emailService.sendEmail(emailData);
+      
+      if (result.success) {
+        console.log('Email sent successfully:', result.messageId);
+        
+        // Update the hold status only after successful email
+        this.selectedWaitHold.status = "Holding";
+        this.selectedWaitHold.holdExpiration = DateHelpers.getExpirationDate();
+        HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, this.selectedWaitHold);
+        
+        // Show success message
+        alert('Email sent successfully! Hold has been started.');
+      } else {
+        // Show error message
+        alert(`Failed to send email: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Error sending email:', error);
+      alert('An unexpected error occurred while sending the email.');
+    }
+  }
+
+  onCancelEmail() {
+    // Reset selected wait hold
+    this.selectedWaitHold = null;
   }
 
   cancelWaitHold(waitHold: WaitHold) {

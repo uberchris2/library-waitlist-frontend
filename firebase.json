@@ -1,4 +1,7 @@
 {
+  "functions": {
+    "source": "functions"
+  },
   "hosting": [ {
     "target": "waitlist-firebase",
     "public": "dist/library-waitlist",
