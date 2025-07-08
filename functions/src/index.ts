@@ -23,11 +23,11 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     type: 'OAuth2',
-    user: functions.config().email?.user || process.env.EMAIL_USER,
-    clientId: functions.config().email?.client_id || process.env.EMAIL_CLIENT_ID,
-    clientSecret: functions.config().email?.client_secret || process.env.EMAIL_CLIENT_SECRET,
-    refreshToken: functions.config().email?.refresh_token || process.env.EMAIL_REFRESH_TOKEN,
-    accessToken: functions.config().email?.access_token || process.env.EMAIL_ACCESS_TOKEN,
+    user: process.env.EMAIL_USER,
+    clientId: process.env.EMAIL_CLIENT_ID,
+    clientSecret: process.env.EMAIL_CLIENT_SECRET,
+    refreshToken: process.env.EMAIL_REFRESH_TOKEN,
+    accessToken: process.env.EMAIL_ACCESS_TOKEN,
   },
 });
 
@@ -58,7 +58,7 @@ export const sendEmail = onCall(async (request: any) => {
   
   // Check if user is authenticated
   if (!auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+    throw new Error('User must be authenticated');
   }
 
   const emailData = data as EmailData;
@@ -70,7 +70,7 @@ export const sendEmail = onCall(async (request: any) => {
 
   try {
     const mailOptions = {
-      from: emailData.from || functions.config().email?.user || process.env.EMAIL_USER,
+      from: emailData.from || process.env.EMAIL_USER,
       to: emailData.to,
       subject: emailData.subject,
       text: emailData.body,
@@ -82,10 +82,11 @@ export const sendEmail = onCall(async (request: any) => {
     const result = await emailTransporter.sendMail(mailOptions);
     
     // Log the email send attempt
-    await admin.firestore().collection('email_logs').add({
+    const firestore = getFirestore();
+    await firestore.collection('email_logs').add({
       to: emailData.to,
       subject: emailData.subject,
-      sentAt: admin.firestore.FieldValue.serverTimestamp(),
+      sentAt: new Date(),
       success: true,
       messageId: result.messageId,
       userId: auth.uid,
@@ -96,28 +97,29 @@ export const sendEmail = onCall(async (request: any) => {
     console.error('Error sending email:', error);
     
     // Log the error
-    await admin.firestore().collection('email_logs').add({
+    const firestore = getFirestore();
+    await firestore.collection('email_logs').add({
       to: emailData.to,
       subject: emailData.subject,
-      sentAt: admin.firestore.FieldValue.serverTimestamp(),
+      sentAt: new Date(),
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
       userId: auth.uid,
     });
 
-    throw new functions.https.HttpsError('internal', 'Failed to send email');
+    throw new Error('Failed to send email');
   }
 });
 
 // Alternative HTTP function with CORS support for testing
-export const sendEmailHttp = functions.https.onRequest((req, res) => {
+export const sendEmailHttp = onRequest(async (req, res) => {
   return corsHandler(req, res, async () => {
     try {
       // For testing purposes, you can bypass auth check
       const emailData = req.body as EmailData;
       
       const mailOptions = {
-        from: emailData.from || functions.config().email?.user || process.env.EMAIL_USER,
+        from: emailData.from || process.env.EMAIL_USER,
         to: emailData.to,
         subject: emailData.subject,
         text: emailData.body,
@@ -129,10 +131,11 @@ export const sendEmailHttp = functions.https.onRequest((req, res) => {
       const result = await emailTransporter.sendMail(mailOptions);
       
       // Log the email send attempt
-      await admin.firestore().collection('email_logs').add({
+      const firestore = getFirestore();
+      await firestore.collection('email_logs').add({
         to: emailData.to,
         subject: emailData.subject,
-        sentAt: admin.firestore.FieldValue.serverTimestamp(),
+        sentAt: new Date(),
         success: true,
         messageId: result.messageId,
         userId: 'test-user', // For testing
@@ -143,10 +146,11 @@ export const sendEmailHttp = functions.https.onRequest((req, res) => {
       console.error('Error sending email:', error);
       
       // Log the error
-      await admin.firestore().collection('email_logs').add({
+      const firestore = getFirestore();
+      await firestore.collection('email_logs').add({
         to: req.body?.to || 'unknown',
         subject: req.body?.subject || 'unknown',
-        sentAt: admin.firestore.FieldValue.serverTimestamp(),
+        sentAt: new Date(),
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
         userId: 'test-user',
