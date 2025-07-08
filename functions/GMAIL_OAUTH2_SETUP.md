@@ -18,6 +18,7 @@ Since Google is discouraging app passwords, here's how to set up OAuth2 authenti
 4. Add these authorized redirect URIs:
    - `http://localhost:3000/auth/google/callback` (for testing)
    - `https://your-firebase-project.firebaseapp.com/auth/google/callback` (for production)
+   - `https://developers.google.com/oauthplayground/`
 5. Note down your Client ID and Client Secret
 
 ## Step 3: Get Refresh Token

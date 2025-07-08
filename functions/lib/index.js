@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendHoldNotification = exports.sendEmail = void 0;
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
@@ -58,47 +57,6 @@ exports.sendEmail = functions.https.onCall(async (request) => {
             userId: auth.uid,
         });
         throw new functions.https.HttpsError('internal', 'Failed to send email');
-    }
-});
-// Function specifically for tool library hold notifications
-exports.sendHoldNotification = functions.https.onCall(async (request) => {
-    const { data, auth } = request;
-    if (!auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
-    }
-    const { waitHold } = data;
-    try {
-        const mailOptions = {
-            from: functions.config().email?.user || process.env.EMAIL_USER,
-            to: waitHold.email,
-            subject: `Hold for ${waitHold.tool} in ${waitHold.category}`,
-            text: `Hello ${waitHold.name},\n\nYou have a hold for ${waitHold.tool} in ${waitHold.category}.\n\nThank you,\nTool Library Team`,
-            html: `Hello ${waitHold.name},<br><br>You have a hold for ${waitHold.tool} in ${waitHold.category}.<br><br>Thank you,<br>Tool Library Team`,
-        };
-        const result = await transporter.sendMail(mailOptions);
-        // Log the email send attempt
-        await admin.firestore().collection('email_logs').add({
-            to: waitHold.email,
-            subject: mailOptions.subject,
-            sentAt: admin.firestore.FieldValue.serverTimestamp(),
-            success: true,
-            messageId: result.messageId,
-            userId: auth.uid,
-        });
-        return { success: true, messageId: result.messageId };
-    }
-    catch (error) {
-        console.error('Error sending hold notification:', error);
-        // Log the error
-        await admin.firestore().collection('email_logs').add({
-            to: waitHold.email,
-            subject: `Hold for ${waitHold.tool} in ${waitHold.category}`,
-            sentAt: admin.firestore.FieldValue.serverTimestamp(),
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error',
-            userId: auth.uid,
-        });
-        throw new functions.https.HttpsError('internal', 'Failed to send hold notification');
     }
 });
 //# sourceMappingURL=index.js.map

@@ -55,8 +55,6 @@ General purpose email sending function.
 - `body`: Email body
 - `from`: (optional) Sender email address
 
-### `sendHoldNotification`
-Specific function for sending tool library hold notifications.
 
 **Parameters:**
 - `waitHold`: Object containing name, email, tool, and category

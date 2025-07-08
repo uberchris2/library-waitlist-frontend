@@ -56,19 +56,6 @@ export class EmailService {
   }
 
   /**
-   * Send a hold notification email (convenience wrapper for sendEmail)
-   */
-  async sendHoldNotification(waitHold: WaitHold): Promise<{ success: boolean; messageId?: string; error?: string }> {
-    // Construct the email data
-    const emailData: EmailData = {
-      to: waitHold.email,
-      subject: `Hold for ${waitHold.tool} in ${waitHold.category}`,
-      body: `Hello ${waitHold.name},\n\nYou have a hold for ${waitHold.tool} in ${waitHold.category}.\n\nThank you,\nTool Library Team`
-    };
-    return this.sendEmail(emailData);
-  }
-
-  /**
    * Check if sendEmail function is available
    */
   async isSendEmailAvailable(): Promise<boolean> {

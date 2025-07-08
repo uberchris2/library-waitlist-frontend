@@ -1,10 +1,11 @@
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+import { onCall, onRequest } from 'firebase-functions/v2/https';
+import { initializeApp } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
 import * as nodemailer from 'nodemailer';
 import * as cors from 'cors';
 
 // Initialize Firebase Admin
-admin.initializeApp();
+initializeApp();
 
 // CORS configuration
 const corsHandler = cors({
@@ -52,7 +53,7 @@ interface EmailData {
 }
 
 // Function to send emails
-export const sendEmail = functions.https.onCall(async (request: any) => {
+export const sendEmail = onCall(async (request: any) => {
   const { data, auth } = request;
   
   // Check if user is authenticated
