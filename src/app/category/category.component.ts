@@ -77,10 +77,11 @@ export class CategoryComponent {
   }
 
   startHold(waitHold: WaitHold) {
+    console.log('waithold', waitHold);
     // Update the hold status first
     waitHold.status = "Holding";
     waitHold.holdExpiration = DateHelpers.getExpirationDate();
-    waitHold.tool = this.categoryId;
+    waitHold.tool = waitHold.tool || this.categoryId;
 
     HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold);
     // Then open the email preview modal
