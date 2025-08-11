@@ -30,7 +30,7 @@ export class CategoryComponent {
   
   // Remove emailPreview and emailPreviewComponent properties
   selectedWaitHold: WaitHold | null = null;
-  canPreviewEmail = false;
+  canPreviewEmail = true;
 
   constructor(
     private firestore: Firestore, 
@@ -62,14 +62,15 @@ export class CategoryComponent {
         }))
       );
     }));
+    
     // Check if sendEmail is available
-    if (!this.configService.isProduction) {
-      this.canPreviewEmail = true;
-    } else {
-      this.emailService.isSendEmailAvailable().then(available => {
-        this.canPreviewEmail = available;
-      });
-    }
+    // if (!this.configService.isProduction) {
+    //   this.canPreviewEmail = true;
+    // } else {
+    //   this.emailService.isSendEmailAvailable().then(available => {
+    //     this.canPreviewEmail = available;
+    //   });
+    // }
   }
 
   ngOnDestroy(): void {

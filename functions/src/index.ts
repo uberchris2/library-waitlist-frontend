@@ -66,7 +66,7 @@ export const sendEmail = onCall(async (request: any) => {
   const emailData = data as EmailData;
 
   // If this is a check request, just return available: true
-  if (data && data.check) {
+  if (emailData?.check) {
     return { available: true };
   }
 
@@ -76,7 +76,7 @@ export const sendEmail = onCall(async (request: any) => {
       to: emailData.to,
       subject: emailData.subject,
       text: emailData.body,
-      html: emailData.body.replace(/\n/g, '<br>'), // Convert newlines to HTML breaks
+      html: emailData.body?.replace(/\n/g, '<br>'), // Convert newlines to HTML breaks
     };
 
     // Use mock transporter in emulator, real transporter in production
@@ -119,13 +119,18 @@ export const sendEmailHttp = onRequest(async (req, res) => {
     try {
       // For testing purposes, you can bypass auth check
       const emailData = req.body as EmailData;
+
+      if (emailData.check) {
+        res.json({ available: true });
+        return;
+      }
       
       const mailOptions = {
         from: emailData.from || process.env.EMAIL_USER,
         to: emailData.to,
         subject: emailData.subject,
         text: emailData.body,
-        html: emailData.body.replace(/\n/g, '<br>'),
+        html: emailData.body?.replace(/\n/g, '<br>'),
       };
 
       // Use mock transporter in emulator, real transporter in production
