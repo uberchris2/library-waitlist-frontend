@@ -7,7 +7,7 @@ import * as cors from 'cors';
 // Initialize Firebase Admin
 initializeApp();
 
-// CORS configuration
+// Enhanced CORS configuration
 const corsHandler = cors({
   origin: [
     'http://localhost:4200',
@@ -15,7 +15,9 @@ const corsHandler = cors({
     'https://waitlist-firebase.web.app',
     'https://waitlist-shoreline.web.app'
   ],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'], // Add OPTIONS for preflight
+  allowedHeaders: ['Content-Type', 'Authorization'] // Add headers you need
 });
 
 // Email configuration - Use mock for emulator, real for production
