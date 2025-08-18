@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Functions, httpsCallable } from '@angular/fire/functions';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../environments/environment';
 import { WaitHold } from './wait-hold';
 
 export interface EmailData {
@@ -22,20 +24,21 @@ export interface HoldNotificationData {
   providedIn: 'root'
 })
 export class EmailService {
-  constructor(private functions: Functions) {}
+  constructor(private functions: Functions, private http: HttpClient) {}
 
   /**
    * Send a general email
    */
   async sendEmail(emailData: EmailData): Promise<{ success: boolean; messageId?: string; error?: string }> {
-    const sendEmailFunction = httpsCallable<EmailData, { success: boolean; messageId?: string }>(
-      this.functions,
-      'sendEmailHttp'
-    );
-    
+    const functionUrl = `https://us-central1-${environment.firebase.projectId}.cloudfunctions.net/sendEmailHttp`;
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
     try {
-      const result = await sendEmailFunction(emailData);
-      return result.data;
+      const result = await this.http.post(functionUrl, emailData, { headers }).toPromise();
+      return result as { success: boolean; messageId?: string };
     } catch (error: any) {
       
       // Handle different error types
