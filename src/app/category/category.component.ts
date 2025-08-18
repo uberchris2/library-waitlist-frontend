@@ -30,7 +30,7 @@ export class CategoryComponent {
   
   // Remove emailPreview and emailPreviewComponent properties
   selectedWaitHold: WaitHold | null = null;
-  canPreviewEmail = false;
+  canPreviewEmail = true;
 
   constructor(
     private firestore: Firestore, 
