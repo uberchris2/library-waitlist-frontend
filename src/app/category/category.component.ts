@@ -12,6 +12,7 @@ import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
 import { EmailService } from '../email.service';
 import { EmailPreviewComponent, EmailData } from '../email-preview/email-preview.component';
 import { ConfigService } from '../config.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
     selector: 'app-category',
@@ -30,7 +31,8 @@ export class CategoryComponent {
   
   // Remove emailPreview and emailPreviewComponent properties
   selectedWaitHold: WaitHold | null = null;
-  canPreviewEmail = true;
+  //only allow emails for shoreline until proof of concept is done and NESTL projecte has the email fn 
+  canPreviewEmail = environment.firebase.projectId == 'waitlist-shoreline'; 
 
   constructor(
     private firestore: Firestore, 

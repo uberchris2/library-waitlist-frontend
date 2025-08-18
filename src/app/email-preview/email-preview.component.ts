@@ -16,7 +16,7 @@ export interface EmailData {
   templateUrl: './email-preview.component.html',
   styleUrls: ['./email-preview.component.css'],
   standalone: true,
-  imports: [FormsModule, NgIf, AuthStatusComponent]
+  imports: [FormsModule]
 })
 export class EmailPreviewComponent {
   @Input() emailData: EmailData = {
