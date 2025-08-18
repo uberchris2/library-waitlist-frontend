@@ -4,15 +4,10 @@
 </div>
 <div class="modal-body">
     <form>
-        <div class="mb-3" *ngIf="showFromField">
-            <label for="emailFrom" class="form-label">From:</label>
-            <input type="email" class="form-control" id="emailFrom" [(ngModel)]="emailData.from" name="emailFrom">
-        </div>
         <div class="mb-3">
             <label for="emailTo" class="form-label">To:</label>
             <input type="email" class="form-control" id="emailTo" [(ngModel)]="emailData.to" name="emailTo">
         </div>
-        <app-auth-status></app-auth-status>
         <div class="mb-3">
             <label for="emailSubject" class="form-label">Subject:</label>
             <input type="text" class="form-control" id="emailSubject" [(ngModel)]="emailData.subject" name="emailSubject">

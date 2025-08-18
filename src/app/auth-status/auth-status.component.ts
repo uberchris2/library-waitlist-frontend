@@ -12,7 +12,7 @@ import { NgIf } from '@angular/common';
     </div>
     <div class="auth-status" *ngIf="!user">
       <small class="text-danger">
-        ❌ Not signed in - Email functions will not work
+        ❌ Not signed in
       </small>
     </div>
   `,
@@ -33,15 +33,6 @@ export class AuthStatusComponent {
   constructor(private auth: Auth) {
     user(this.auth).subscribe(u => {
       this.user = u;
-      console.log('Auth status changed:', u ? `Signed in as ${u.email}` : 'Not signed in');
-      if (u) {
-        console.log('User details:', {
-          uid: u.uid,
-          email: u.email,
-          displayName: u.displayName,
-          emailVerified: u.emailVerified
-        });
-      }
     });
   }
 } 

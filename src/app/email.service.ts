@@ -54,17 +54,4 @@ export class EmailService {
       return { success: false, error: errorMessage };
     }
   }
-
-  /**
-   * Check if sendEmail function is available
-   */
-  async isSendEmailAvailable(): Promise<boolean> {
-    const sendEmailFunction = httpsCallable<any, any>(this.functions, 'sendEmailHttp');
-    try {
-      await sendEmailFunction({ check: true });
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
 } 

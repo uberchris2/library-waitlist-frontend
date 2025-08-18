@@ -63,14 +63,6 @@ export class CategoryComponent {
       );
     }));
     
-    // Check if sendEmail is available
-    // if (!this.configService.isProduction) {
-    //   this.canPreviewEmail = true;
-    // } else {
-    //   this.emailService.isSendEmailAvailable().then(available => {
-    //     this.canPreviewEmail = available;
-    //   });
-    // }
   }
 
   ngOnDestroy(): void {
