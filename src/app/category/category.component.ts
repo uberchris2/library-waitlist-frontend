@@ -32,7 +32,8 @@ export class CategoryComponent {
   // Remove emailPreview and emailPreviewComponent properties
   selectedWaitHold: WaitHold | null = null;
   //only allow emails for shoreline until proof of concept is done and NESTL projecte has the email fn 
-  canPreviewEmail = environment.firebase.projectId == 'waitlist-shoreline'; 
+  href = window.location.href;
+  canPreviewEmail = false;
 
   constructor(
     private firestore: Firestore, 
@@ -43,6 +44,8 @@ export class CategoryComponent {
   ) {
     this.waitHoldCollection = collection(firestore, 'wait-holds');
     this.categoriesCollection = collection(firestore, 'categories');
+    this.canPreviewEmail = this.href.includes('shoreline') || this.href.includes('localhost'); 
+
   }
 
   ngOnInit(): void {
