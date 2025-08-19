@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { getFunctions, httpsCallable } from '@angular/fire/functions';
 import { WaitHold } from './wait-hold';
 
 export interface EmailData {
@@ -22,14 +22,16 @@ export interface HoldNotificationData {
   providedIn: 'root'
 })
 export class EmailService {
-  constructor(private functions: Functions /*, private http: HttpClient*/) {}
+  constructor() {}
 
   /**
    * Send a general email
    */
   async sendEmail(emailData: EmailData): Promise<{ success: boolean; messageId?: string; error?: string }> {
+
+    const functions = getFunctions();
     const sendEmailFunction = httpsCallable<EmailData, { success: boolean; messageId?: string }>(
-      this.functions,
+      functions,
       'sendEmail'
     );
 
