@@ -44,7 +44,7 @@ export class CategoryComponent {
   ) {
     this.waitHoldCollection = collection(firestore, 'wait-holds');
     this.categoriesCollection = collection(firestore, 'categories');
-    this.canPreviewEmail = this.href.includes('localhost') || this.href.includes('shoreline') 
+    this.canPreviewEmail = this.href.includes('localhost');// || this.href.includes('shoreline') 
 
   }
 
@@ -100,7 +100,8 @@ Your item, ${waitHold.tool}, is back in stock and on hold for you to pick up ove
 
 If you no longer need the item please let us know.
  
-Thanks!`
+Thanks!
+`
     };
 
     const modalRef = this.modalService.open(EmailPreviewComponent, {
