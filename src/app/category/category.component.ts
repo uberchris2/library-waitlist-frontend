@@ -44,7 +44,7 @@ export class CategoryComponent {
   ) {
     this.waitHoldCollection = collection(firestore, 'wait-holds');
     this.categoriesCollection = collection(firestore, 'categories');
-    this.canPreviewEmail = this.href.includes('localhost');// || this.href.includes('shoreline') 
+    this.canPreviewEmail = this.href.includes('localhost') || this.href.includes('shoreline');
 
   }
 
@@ -92,16 +92,13 @@ export class CategoryComponent {
     const emailPreview: EmailData = {
       to: waitHold.email,
       subject: `${waitHold.tool} on hold at ${this.configService.siteName || "the tool library"}`,
-
-      body: `
-      Hello ${waitHold.name},
+      body: `Hello ${waitHold.name},
 
 Your item, ${waitHold.tool}, is back in stock and on hold for you to pick up over the next two business days. We will hold your item through ${waitHold.holdExpiration.toDateString()}.  
-
 If you no longer need the item please let us know.
- 
+
 Thanks!
-`
+Tool Library Staff`
     };
 
     const modalRef = this.modalService.open(EmailPreviewComponent, {
