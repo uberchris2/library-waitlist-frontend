@@ -1,94 +1,141 @@
-# Firebase Functions Email Setup
+# Email Authentication Setup Guide
 
-This directory contains Firebase Functions for sending emails using nodemailer.
+This guide provides steps for setting up authentication for sending emails from your Firebase Functions using a service account
 
-## Setup Instructions
+## Overview
 
-### 1. Install Dependencies
+The new implementation includes:
+- **OAuth2 with refresh tokens** (primary method for Gmail)
+- **SendGrid fallback** (automatic failover)
+- **Better error handling and logging**
+
+## Setup Options
+
+### Option 1: Gmail OAuth2 (Recommended)
+
+This is the most stable method for Gmail authentication.
+
+#### Step 1: Get OAuth2 Credentials
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Select your project
+3. Go to "APIs & Services" > "Credentials"
+4. Click "Create Credentials" > "OAuth 2.0 Client IDs"
+5. Choose "Web application"
+6. Add authorized redirect URI: `https://developers.google.com/oauthplayground/`
+7. Note your Client ID and Client Secret
+
+#### Step 2: Get Refresh Token
+
+1. Go to [Google OAuth 2.0 Playground](https://developers.google.com/oauthplayground/)
+2. Click settings (⚙️) and check "Use your own OAuth credentials"
+3. Enter your Client ID and Client Secret
+4. In the left panel, select "Gmail API v1" > "https://mail.google.com/"
+5. Click "Authorize APIs" and sign in
+6. Click "Exchange authorization code for tokens"
+7. Copy the **Refresh token** (not access token)
+
+#### Step 3: Configure Firebase Secrets
+
 ```bash
-cd functions
-npm install
+firebase functions:secrets:set GMAIL_CLIENT_ID
+# Enter your Client ID when prompted
+
+firebase functions:secrets:set GMAIL_CLIENT_SECRET
+# Enter your Client Secret when prompted
+
+firebase functions:secrets:set GMAIL_REFRESH_TOKEN
+# Enter your Refresh Token when prompted
+
+firebase functions:secrets:set SENDER_EMAIL
+# Enter the email address to send from (e.g., noreply@seattlereconomy.org)
 ```
 
-### 2. Configure Email Provider
+### Option 2: SendGrid (Fallback/Alternative)
 
-You have several options for email configuration:
+SendGrid is automatically used as a fallback, but you can also use it as your primary method.
 
-#### Option A: Gmail (Recommended for testing)
-1. Enable 2-factor authentication on your Gmail account
-2. Generate an App Password: https://myaccount.google.com/apppasswords
-3. Set the environment variables:
+#### Step 1: Create SendGrid Account
+
+1. Go to [SendGrid](https://sendgrid.com/)
+2. Sign up for a free account (100 emails/day free)
+3. Verify your sender email address
+4. Go to Settings > API Keys
+5. Create a new API key with "Mail Send" permissions
+
+#### Step 2: Configure Firebase Secret
+
 ```bash
-firebase functions:config:set email.user="your-email@gmail.com" email.password="your-app-password"
+firebase functions:secrets:set SENDGRID_API_KEY
+# Enter your SendGrid API key when prompted
 ```
 
-#### Option B: Other Email Providers
-Update the transporter configuration in `src/index.ts`:
-```typescript
-const transporter = nodemailer.createTransporter({
-  host: 'your-smtp-host.com',
-  port: 587,
-  secure: false, // true for 465, false for other ports
-  auth: {
-    user: functions.config().email?.user || process.env.EMAIL_USER,
-    pass: functions.config().email?.password || process.env.EMAIL_PASSWORD,
-  },
-});
-```
+## Deployment
 
-### 3. Deploy Functions
+1. **Install dependencies:**
+   ```bash
+   cd functions
+   npm install
+   ```
+
+2. **Build and deploy:**
+   ```bash
+   npm run build
+   firebase deploy --only functions
+   ```
+
+## How It Works
+
+### Primary Method: Gmail OAuth2
+- Uses refresh tokens (no expiration issues)
+- Automatically handles token refresh
+- Sends emails from your organization domain
+
+### Fallback Method: SendGrid
+- Automatically used if Gmail fails
+- No authentication complexity
+- Reliable delivery
+- Good for high-volume sending
+
+## Testing
+
+### Test Gmail OAuth2
 ```bash
-firebase deploy --only functions
+# Check logs for successful authentication
+firebase functions:log --only sendEmail
 ```
 
-### 4. Test the Functions
-You can test the functions using the Firebase Console or by calling them from your Angular app.
-
-## Available Functions
-
-### `sendEmail`
-General purpose email sending function.
-
-**Parameters:**
-- `to`: Recipient email address
-- `subject`: Email subject
-- `body`: Email body
-- `from`: (optional) Sender email address
-
-
-**Parameters:**
-- `waitHold`: Object containing name, email, tool, and category
-
-## Security Notes
-
-- All functions require user authentication
-- Email logs are stored in Firestore for monitoring
-- Consider implementing rate limiting for production use
-- Use environment variables for sensitive configuration
+### Test SendGrid Fallback
+```bash
+# Temporarily set an invalid Gmail refresh token to test fallback
+firebase functions:secrets:set GMAIL_REFRESH_TOKEN
+# Enter an invalid token, then test email sending
+```
 
 ## Troubleshooting
 
-### Common Issues:
+### Common Issues
 
-1. **Authentication Errors**: Make sure the user is signed in to Firebase Auth
-2. **Email Provider Issues**: Check your email provider's SMTP settings
-3. **Deployment Errors**: Ensure you're in the correct Firebase project
+1. **"Invalid Grant" Error**
+   - Your refresh token may have expired
+   - Generate a new one using the OAuth Playground
 
-### Logs
-View function logs:
+2. **"Access Denied" Error**
+   - Make sure the Gmail API is enabled in your Google Cloud project
+   - Check that your OAuth2 credentials are correct
+
+3. **SendGrid "Unauthorized" Error**
+   - Verify your API key is correct
+   - Make sure your sender email is verified in SendGrid
+
+### Debugging
+
+Check the Firebase Functions logs:
 ```bash
-firebase functions:log
+firebase functions:log --only sendEmail --limit 50
 ```
 
-## Environment Variables
-
-For local development, you can set environment variables in a `.env` file:
-```
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASSWORD=your-app-password
-```
-
-For production, use Firebase Functions config:
-```bash
-firebase functions:config:set email.user="your-email@gmail.com" email.password="your-app-password"
-``` 
+Look for these log messages:
+- `Email sent successfully via Gmail:` - Gmail worked
+- `Gmail failed, trying SendGrid fallback:` - Gmail failed, using SendGrid
+- `Email sent successfully via SendGrid:` - SendGrid worked

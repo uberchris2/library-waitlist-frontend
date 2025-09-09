@@ -1,169 +1,137 @@
-import { onCall, onRequest } from 'firebase-functions/v2/https';
-import { initializeApp } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
-import * as nodemailer from 'nodemailer';
-import * as cors from 'cors';
+import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
+import { defineSecret } from 'firebase-functions/params';
+import { logger } from 'firebase-functions';
+const { google } = require('googleapis');
+// const sgMail = require('@sendgrid/mail');
 
-// Initialize Firebase Admin
-initializeApp();
+// Gmail OAuth2 secrets
+const gmailClientId = defineSecret('GMAIL_CLIENT_ID');
+const gmailClientSecret = defineSecret('GMAIL_CLIENT_SECRET');
+const gmailRefreshToken = defineSecret('GMAIL_REFRESH_TOKEN');
+const senderEmail = defineSecret('SENDER_EMAIL');
 
-// Enhanced CORS configuration
-const corsHandler = cors({
-  origin: [
-    'http://localhost:4200',
-    'http://localhost:3000',
-    'https://waitlist-firebase.web.app',
-    'https://waitlist-shoreline.web.app'
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'OPTIONS'], // Add OPTIONS for preflight
-  allowedHeaders: ['Content-Type', 'Authorization'] // Add headers you need
-});
+// SendGrid fallback
+// const sendGridApiKey = defineSecret('SENDGRID_API_KEY');
 
-// Email configuration - Use mock for emulator, real for production
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    type: 'OAuth2',
-    user: process.env.EMAIL_USER,
-    clientId: process.env.EMAIL_CLIENT_ID,
-    clientSecret: process.env.EMAIL_CLIENT_SECRET,
-    refreshToken: process.env.EMAIL_REFRESH_TOKEN,
-    accessToken: process.env.EMAIL_ACCESS_TOKEN,
-  },
-});
+admin.initializeApp();
 
-// Mock transporter for emulator testing
-const mockTransporter = {
-  sendMail: async (mailOptions: any) => {
-    console.log('📧 MOCK EMAIL SENT:', {
-      to: mailOptions.to,
-      subject: mailOptions.subject,
-      text: mailOptions.text
-    });
-    return { messageId: 'mock-message-id-' + Date.now() };
-  }
-};
-
-// Interface for email data
 interface EmailData {
   to: string;
   subject: string;
   body: string;
-  from?: string;
-  check?: boolean; // Added for check functionality
 }
 
-// Function to send emails
-export const sendEmail = onCall(async (request: any) => {
-  const { data, auth } = request;
-  
-  // Check if user is authenticated
-  if (!auth) {
-    throw new Error('User must be authenticated');
+interface EmailResponse {
+  success: boolean;
+  messageId: string;
+}
+
+export const sendEmail = functions.https.onCall({
+  secrets: [gmailClientId, gmailClientSecret, gmailRefreshToken, senderEmail]}, 
+  async (request: functions.https.CallableRequest<EmailData>): Promise<EmailResponse> => {
+
+  // Verify authentication
+  if (!request.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+  } else if (!request.auth.token?.email?.endsWith('@seattlereconomy.org')) {
+    throw new functions.https.HttpsError('unauthenticated', 'User is authenticated with a disallowed account');
   }
 
-  const emailData = data as EmailData;
+  const { to, subject, body } = request.data;
 
-  // If this is a check request, just return available: true
-  if (emailData?.check) {
-    return { available: true };
-  }
-
+  // Try Gmail OAuth2 first, fallback to SendGrid
   try {
-    const mailOptions = {
-      from: emailData.from || process.env.EMAIL_USER,
-      to: emailData.to,
-      subject: emailData.subject,
-      text: emailData.body,
-      html: emailData.body?.replace(/\n/g, '<br>'), // Convert newlines to HTML breaks
-    };
-
-    // Use mock transporter in emulator, real transporter in production
-    const emailTransporter = process.env.FUNCTIONS_EMULATOR ? mockTransporter : transporter;
-    const result = await emailTransporter.sendMail(mailOptions);
+    const gmailResult = await sendEmailViaGmail(to, subject, body);
+    return gmailResult;
+  } catch (gmailError) {
+    logger.warn('Gmail failed, trying SendGrid fallback:', gmailError);
     
-    // Log the email send attempt
-    const firestore = getFirestore();
-    await firestore.collection('email_logs').add({
-      to: emailData.to,
-      subject: emailData.subject,
-      sentAt: new Date(),
-      success: true,
-      messageId: result.messageId,
-      userId: auth.uid,
-    });
-
-    return { success: true, messageId: result.messageId };
-  } catch (error) {
-    console.error('Error sending email:', error);
-    
-    // Log the error
-    const firestore = getFirestore();
-    await firestore.collection('email_logs').add({
-      to: emailData.to,
-      subject: emailData.subject,
-      sentAt: new Date(),
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-      userId: auth.uid,
-    });
-
-    throw new Error('Failed to send email');
-  }
+    // try {
+    //   const sendGridResult = await sendEmailViaSendGrid(to, subject, body);
+    //   return sendGridResult;
+    // } catch (sendGridError) {
+      logger.error('Both Gmail and SendGrid failed:', { gmailError });
+      throw new functions.https.HttpsError('internal', 'Failed to send email via all providers');
+    }
 });
 
-// Alternative HTTP function with CORS support for testing
-export const sendEmailHttp = onRequest(async (req, res) => {
-  return corsHandler(req, res, async () => {
-    try {
-      // For testing purposes, you can bypass auth check
-      const emailData = req.body as EmailData;
+async function sendEmailViaGmail(to: string, subject: string, body: string): Promise<EmailResponse> {
+  try {
+    // Create OAuth2 client
+    const oauth2Client = new google.auth.OAuth2(
+      gmailClientId.value(),
+      gmailClientSecret.value(),
+      'urn:ietf:wg:oauth:2.0:oob' // For server-to-server
+    );
 
-      if (emailData.check) {
-        res.json({ available: true });
-        return;
-      }
-      
-      const mailOptions = {
-        from: emailData.from || process.env.EMAIL_USER,
-        to: emailData.to,
-        subject: emailData.subject,
-        text: emailData.body,
-        html: emailData.body?.replace(/\n/g, '<br>'),
-      };
+    // Set credentials
+    oauth2Client.setCredentials({
+      refresh_token: gmailRefreshToken.value()
+    });
 
-      // Use mock transporter in emulator, real transporter in production
-      const emailTransporter = process.env.FUNCTIONS_EMULATOR ? mockTransporter : transporter;
-      const result = await emailTransporter.sendMail(mailOptions);
-      
-      // Log the email send attempt
-      const firestore = getFirestore();
-      await firestore.collection('email_logs').add({
-        to: emailData.to,
-        subject: emailData.subject,
-        sentAt: new Date(),
-        success: true,
-        messageId: result.messageId,
-        userId: 'test-user', // For testing
-      });
-
-      res.json({ success: true, messageId: result.messageId });
-    } catch (error) {
-      console.error('Error sending email:', error);
-      
-      // Log the error
-      const firestore = getFirestore();
-      await firestore.collection('email_logs').add({
-        to: req.body?.to || 'unknown',
-        subject: req.body?.subject || 'unknown',
-        sentAt: new Date(),
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-        userId: 'test-user',
-      });
-
-      res.status(500).json({ success: false, error: 'Failed to send email' });
+    // Get access token
+    const { token } = await oauth2Client.getAccessToken();
+    if (!token) {
+      throw new Error('Failed to get access token');
     }
-  });
-}); 
+
+    // Create Gmail API instance
+    const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
+
+    // Convert newlines to HTML breaks for proper email formatting
+    const htmlBody = body.replace(/\n/g, '<br>');
+    
+    const email = [
+      `To: ${to}`,
+      `Subject: ${subject}`,
+      `From: ${senderEmail.value()}`,
+      'Content-Type: text/html; charset=utf-8',
+      '',
+      htmlBody
+    ].join('\n');
+
+    const encodedEmail = Buffer.from(email).toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+
+    // Send email
+    const result = await gmail.users.messages.send({
+      userId: 'me',
+      requestBody: {
+        raw: encodedEmail
+      }
+    });
+
+    logger.info('Email sent successfully via Gmail:', result.data.id);
+    return { success: true, messageId: result.data.id };
+
+  } catch (error) {
+    logger.error('Gmail send error:', error);
+    throw error;
+  }
+}
+
+// async function sendEmailViaSendGrid(to: string, subject: string, body: string): Promise<EmailResponse> {
+//   try {
+//     // Initialize SendGrid
+//     sgMail.setApiKey(sendGridApiKey.value());
+
+//     const msg = {
+//       to: to,
+//       from: senderEmail.value(),
+//       subject: subject,
+//       html: body,
+//     };
+
+//     const result = await sgMail.send(msg);
+    
+//     logger.info('Email sent successfully via SendGrid:', result[0].headers['x-message-id']);
+//     return { success: true, messageId: result[0].headers['x-message-id'] };
+
+//   } catch (error) {
+//     logger.error('SendGrid send error:', error);
+//     throw error;
+//   }
+// }
