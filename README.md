@@ -3,6 +3,14 @@
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.6.
 
 ## Development server
+ng build --configuration=development
+docker build -t waitlist-frontend-ssl
+docker run -p 443:443 waitlist-frontend-ssl
+
+To see actual data make your email is added to 
+Firebase > Build > Filestore Database > Rules
+ https://console.firebase.google.com/project/waitlist-shoreline/firestore/databases/-default-/rules
+
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
