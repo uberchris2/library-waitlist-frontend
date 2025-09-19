@@ -4,8 +4,9 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Development server
 ng build --configuration=development
-docker build -t waitlist-frontend-ssl
+docker build -t waitlist-frontend-ssl .
 docker run -p 443:443 waitlist-frontend-ssl
+
 
 To see actual data make your email is added to 
 Firebase > Build > Filestore Database > Rules
