@@ -44,7 +44,7 @@ export class CategoryComponent {
   ) {
     this.waitHoldCollection = collection(firestore, 'wait-holds');
     this.categoriesCollection = collection(firestore, 'categories');
-    this.canPreviewEmail = this.href.includes('localhost') || this.href.includes('shoreline');
+    this.canPreviewEmail = true; //A flag to be able to toggle for troubleshooting
 
   }
 
