@@ -7,5 +7,6 @@ export interface WaitHold {
   name: string;
   email: string;
   tool: string;
+  notes?: string;
   holdExpiration: Date | null;
 }

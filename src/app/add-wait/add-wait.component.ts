@@ -29,7 +29,8 @@ export class AddWaitComponent {
     status: "Waiting",
     holdExpiration: null,
     name: "",
-    tool: ""
+    tool: "",
+    notes: ""
   };
 
   member$: Observable<Member[]>;
@@ -135,6 +136,7 @@ export class AddWaitComponent {
         name: member.name,
         email: member.email,
         tool: category.id,
+        notes: "",
         holdExpiration: null
       };
       addDoc(this.waitHoldCollection, waitHold);

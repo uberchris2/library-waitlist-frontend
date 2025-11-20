@@ -17,6 +17,7 @@
             <th scope="col">Name</th>
             <th scope="col">Email</th>
             <th scope="col">Tool</th>
+            <th scope="col">Notes</th>
             <th scope="col">Hold Expiration</th>
             <th scope="col">Actions</th>
         </tr>
@@ -34,6 +35,7 @@
                 </button>
             </td>
             <td>{{waitHold.tool}}</td>
+            <td>{{waitHold.notes}}</td>
             <td [class.text-danger]="waitHold.holdExpiration && waitHold.holdExpiration < today" class="text-danger">
                 {{waitHold.holdExpiration | date}}</td>
             <td>

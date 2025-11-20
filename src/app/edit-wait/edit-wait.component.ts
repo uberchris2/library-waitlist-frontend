@@ -26,7 +26,8 @@ export class EditWaitComponent {
     status: "Waiting",
     holdExpiration: null,
     name: "",
-    tool: ""
+    tool: "",
+    notes: ""
   };
 
   category$: Observable<Category[]>;

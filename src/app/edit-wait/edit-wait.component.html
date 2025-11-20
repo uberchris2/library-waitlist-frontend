@@ -18,6 +18,11 @@
                 <input type="text" class="form-control" id="toolInput" name="toolInput" [(ngModel)]="waitHold.tool"
                     placeholder="1234">
             </div>
+            <div class="form-group mt-3">
+                <label for="notesInput">Notes</label>
+                <textarea class="form-control" id="notesInput" name="notesInput" [(ngModel)]="waitHold.notes"
+                    rows="3" placeholder="Additional notes..."></textarea>
+            </div>
             <div class="form-group mt-3" *ngIf="waitHold.status == 'Holding'">
                 <label for="holdInput">Hold Expiration</label>
                 <input type="date" class="form-control" id="holdInput" name="holdInput"
