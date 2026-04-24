@@ -12,7 +12,6 @@ import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
 import { EmailService } from '../email.service';
 import { EmailPreviewComponent, EmailData } from '../email-preview/email-preview.component';
 import { ConfigService } from '../config.service';
-import { environment } from 'src/environments/environment';
 
 @Component({
     selector: 'app-category',
@@ -48,6 +47,10 @@ export class CategoryComponent {
 
   }
 
+  makeMyTurnInvUrl(itemId: string): string {
+   return this.configService.getMyTurnInventoryShowUrl(itemId) ?? '';
+  }
+
   ngOnInit(): void {
     this.subscriptions.push(this.route.paramMap.subscribe((params: ParamMap) => {
       this.categoryId = String(params.get('categoryId'));
@@ -75,7 +78,6 @@ export class CategoryComponent {
   }
 
   startHold(waitHold: WaitHold) {
-    console.log('waithold', waitHold);
     // Update the hold status first
     waitHold.status = "Holding";
     waitHold.holdExpiration = DateHelpers.getExpirationDate();
@@ -108,6 +110,7 @@ Tool Library Staff`
     });
     modalRef.componentInstance.emailData = emailPreview;
     modalRef.componentInstance.title = 'Preview Hold Notification Email';
+    modalRef.componentInstance.waitHold = waitHold;
     modalRef.componentInstance.sendEmail.subscribe((emailData: EmailData) => {
       this.onSendEmail(emailData);
       modalRef.close();
@@ -151,16 +154,16 @@ Tool Library Staff`
   }
 
   cancelWaitHold(waitHold: WaitHold) {
-    const wasHold = waitHold.status == "Holding";
     waitHold.status = "Cancelled";
+    waitHold.heldItemId = null;
     HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold);
   }
 
   demoteHold(waitHold: WaitHold) {
-    const wasHold = waitHold.status == "Holding";
     waitHold.status = "Waiting";
     waitHold.created = new Date();
     waitHold.holdExpiration = null;
+    waitHold.heldItemId = null;
     HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold);
   }
 

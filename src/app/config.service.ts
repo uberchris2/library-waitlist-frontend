@@ -21,4 +21,21 @@ export class ConfigService {
   get headerClass(): string {
     return environment.headerClass;
   }
+
+  get myTurnUrl(): string {
+    return environment.myTurnUrl ?? '';
+  }
+
+  /** Full myTurn inventory URL, or null if host or id is not configured. */
+  getMyTurnInventoryShowUrl(heldItemId: string | null | undefined): string | null {
+    const host = (environment.myTurnUrl ?? '')
+      .trim()
+      .replace(/^https?:\/\//i, '')
+      .replace(/\/+$/, '');
+    const id = (heldItemId ?? '').toString().trim();
+    if (!host || !id) {
+      return null;
+    }
+    return `https://${host}/library/inventory/show/${id}`;
+  }
 } 

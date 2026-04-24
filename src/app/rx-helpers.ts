@@ -8,6 +8,8 @@ export class RxHelpers {
     docData['created'] = docData['created']?.toDate();
     if (docData['holdExpiration'] != null)
       docData['holdExpiration'] = docData['holdExpiration']?.toDate();
+    if (docData['heldItemId'] != null && docData['heldItemId'] !== '')
+      docData['heldItemId'] = String(docData['heldItemId']);
     return docData as WaitHold;
   }
 

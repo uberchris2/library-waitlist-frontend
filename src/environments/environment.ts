@@ -13,4 +13,5 @@ export const environment = {
     headerClass: '',
     openDays: [1],
     production: true,
+    myTurnUrl: '',
 };
