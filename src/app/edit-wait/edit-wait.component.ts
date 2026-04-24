@@ -14,7 +14,6 @@ import { ConfigService } from '../config.service';
     selector: 'app-edit-wait',
     templateUrl: './edit-wait.component.html',
     styleUrls: ['./edit-wait.component.css'],
-    standalone: true,
     imports: [FormsModule, NgIf, RouterLink, DatePipe]
 })
 export class EditWaitComponent {

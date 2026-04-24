@@ -17,7 +17,6 @@ import { ConfigService } from '../config.service';
     selector: 'app-category',
     templateUrl: './category.component.html',
     styleUrls: ['./category.component.css'],
-    standalone: true,
     imports: [RouterLink, NgbPopover, NgIf, NgFor, ClipboardModule, AsyncPipe, DatePipe]
 })
 export class CategoryComponent {

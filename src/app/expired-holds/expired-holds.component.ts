@@ -13,7 +13,6 @@ import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
     selector: 'app-expired-holds',
     templateUrl: './expired-holds.component.html',
     styleUrls: ['./expired-holds.component.css'],
-    standalone: true,
     imports: [NgIf, NgFor, ClipboardModule, NgbPopover, AsyncPipe, DatePipe]
 })
 export class ExpiredHoldsComponent {

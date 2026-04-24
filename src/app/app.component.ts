@@ -10,7 +10,6 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
     selector: 'app-root',
     templateUrl: './app.component.html',
     styles: [],
-    standalone: true,
     imports: [RouterLink, NgbCollapse, RouterLinkActive, NgIf, RouterOutlet]
 })
 export class AppComponent {

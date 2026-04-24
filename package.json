@@ -11,16 +11,16 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^18.2.13",
-    "@angular/common": "^18.2.13",
-    "@angular/compiler": "^18.2.13",
-    "@angular/core": "^18.2.13",
+    "@angular/animations": "^19.2.21",
+    "@angular/common": "^19.2.21",
+    "@angular/compiler": "^19.2.21",
+    "@angular/core": "^19.2.21",
     "@angular/fire": "^18.0.1",
-    "@angular/forms": "^18.2.13",
-    "@angular/localize": "^18.2.13",
-    "@angular/platform-browser": "^18.2.13",
-    "@angular/platform-browser-dynamic": "^18.2.13",
-    "@angular/router": "^18.2.13",
+    "@angular/forms": "^19.2.21",
+    "@angular/localize": "^19.2.21",
+    "@angular/platform-browser": "^19.2.21",
+    "@angular/platform-browser-dynamic": "^19.2.21",
+    "@angular/router": "^19.2.21",
     "@ng-bootstrap/ng-bootstrap": "^17.0.1",
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.2.3",
@@ -30,13 +30,13 @@
     "rxfire": "^6.0.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.10"
+    "zone.js": "~0.15.1"
   },
   "devDependencies": {
-    "@angular/build": "^18.2.20",
-    "@angular/cli": "~18.2.20",
-    "@angular/compiler-cli": "^18.2.13",
+    "@angular/build": "^19.2.24",
+    "@angular/cli": "~19.2.24",
+    "@angular/compiler-cli": "^19.2.21",
     "ts-node": "^10.9.1",
-    "typescript": "~5.4.5"
+    "typescript": "~5.8.3"
   }
 }

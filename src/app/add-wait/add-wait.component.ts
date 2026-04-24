@@ -14,7 +14,6 @@ import { inject } from '@angular/core';
     selector: 'app-add-wait',
     templateUrl: './add-wait.component.html',
     styleUrls: ['./add-wait.component.css'],
-    standalone: true,
     imports: [FormsModule, NgFor, NgbTypeahead, RouterLink, NgbHighlight, AsyncPipe]
 })
 export class AddWaitComponent {

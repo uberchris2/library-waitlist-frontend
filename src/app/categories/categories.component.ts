@@ -17,7 +17,6 @@ const IMPORTS: Type<any>[] = [NgIf, NgFor, RouterLink, NgbPopover, FormsModule, 
     selector: 'app-categories',
     templateUrl: './categories.component.html',
     styleUrls: ['./categories.component.css'],
-    standalone: true,
     imports: IMPORTS
 })
 export class CategoriesComponent {

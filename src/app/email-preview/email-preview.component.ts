@@ -12,11 +12,10 @@ export interface EmailData {
 }
 
 @Component({
-  selector: 'app-email-preview',
-  templateUrl: './email-preview.component.html',
-  styleUrls: ['./email-preview.component.css'],
-  standalone: true,
-  imports: [FormsModule, NgIf]
+    selector: 'app-email-preview',
+    templateUrl: './email-preview.component.html',
+    styleUrls: ['./email-preview.component.css'],
+    imports: [FormsModule, NgIf]
 })
 export class EmailPreviewComponent {
   @Input() emailData: EmailData = {

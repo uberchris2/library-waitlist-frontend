@@ -12,7 +12,6 @@ import { NgFor, NgIf, AsyncPipe, DatePipe } from '@angular/common';
     selector: 'app-activity',
     templateUrl: './activity.component.html',
     styleUrls: ['./activity.component.css'],
-    standalone: true,
     imports: [NgFor, NgIf, NgbPopover, AsyncPipe, DatePipe]
 })
 export class ActivityComponent {

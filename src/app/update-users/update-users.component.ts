@@ -10,7 +10,6 @@ import { NgIf } from '@angular/common';
     selector: 'app-update-users',
     templateUrl: './update-users.component.html',
     styleUrls: ['./update-users.component.css'],
-    standalone: true,
     imports: [NgIf, NgbProgressbar]
 })
 export class UpdateUsersComponent {
