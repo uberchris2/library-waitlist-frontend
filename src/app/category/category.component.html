@@ -1,71 +1,81 @@
 <div class="row">
-    <div class="col-10">
-        <h1 class="mb-3"><a [routerLink]="'/categories'">Categories</a> / {{categoryId}}</h1>
-    </div>
-    <div class="col text-end">
-        <button [routerLink]="'/add-wait/' + categoryId" class="btn btn-success" type="button"
-            ngbPopover="Add a member to the waitlist" triggers="mouseenter:mouseleave"><i class="bi bi-plus-lg"></i>
-            Add</button>
-    </div>
+  <div class="col-10">
+    <h1 class="mb-3"><a [routerLink]="'/categories'">Categories</a> / {{categoryId}}</h1>
+  </div>
+  <div class="col text-end">
+    <button [routerLink]="'/add-wait/' + categoryId" class="btn btn-success" type="button"
+      ngbPopover="Add a member to the waitlist" triggers="mouseenter:mouseleave"><i class="bi bi-plus-lg"></i>
+    Add</button>
+  </div>
 </div>
 
-<table *ngIf="(waitHold$ | async)?.length" class="table">
+@if ((waitHold$ | async)?.length) {
+  <table class="table">
     <thead>
-        <tr>
-            <th scope="col">Status</th>
-            <th scope="col">Added</th>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Tool</th>
-            <th scope="col">Notes</th>
-            <th scope="col">Hold Expiration</th>
-            <th scope="col">Item Number</th>
-            <th scope="col">Actions</th>
-        </tr>
+      <tr>
+        <th scope="col">Status</th>
+        <th scope="col">Added</th>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Tool</th>
+        <th scope="col">Notes</th>
+        <th scope="col">Hold Expiration</th>
+        <th scope="col">Item Number</th>
+        <th scope="col">Actions</th>
+      </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let waitHold of waitHold$ | async">
-            <td>{{waitHold.status}}</td>
-            <td>{{waitHold.created | date}}</td>
-            <td>{{waitHold.name}}</td>
-            <td>
-                {{waitHold.email}}
-                <button class="btn btn-light btn-sm" ngxClipboard [cbContent]="waitHold.email"
-                    ngbPopover="Copy email to clipboard" triggers="mouseenter:mouseleave">
-                    <i class="bi bi-clipboard"></i>
-                </button>
-            </td>
-            <td>{{waitHold.tool}}</td>
-            <td>{{waitHold.notes}}</td>
-            <td [class.text-danger]="waitHold.holdExpiration && waitHold.holdExpiration < today" class="text-danger">
-                {{waitHold.holdExpiration | date}}</td>
-            <td>
-                <a [href]="makeMyTurnInvUrl(waitHold.heldItemId ?? '')"
-                    target="_blank" rel="noopener noreferrer">{{waitHold.heldItemId}}</a>
-            </td>
-            <td>
-                <div class="btn-group">
-                    <button *ngIf="waitHold.status == 'Waiting'" (click)="startHold(waitHold)" class="btn btn-primary"
-                        type="button" ngbPopover="Start hold" triggers="mouseenter:mouseleave"><i
-                            class="bi bi-stopwatch"></i></button>
-                    <button *ngIf="waitHold.status == 'Holding'" (click)="pickupHold(waitHold)" class="btn btn-primary"
-                        type="button" ngbPopover="Picked up" triggers="mouseenter:mouseleave"><i
-                            class="bi bi-bag-check"></i></button>
-                    <button [routerLink]="'/edit-wait/' + waitHold.id" class="btn btn-secondary" type="button"
-                        ngbPopover="Edit this hold/waitlist entry" triggers="mouseenter:mouseleave"><i
-                            class="bi bi-pencil"></i></button>
-                    <button (click)="cancelWaitHold(waitHold)" class="btn btn-danger" type="button"
-                        ngbPopover="Cancel this hold/waitlist entry" triggers="mouseenter:mouseleave"><i
-                            class="bi bi-trash"></i></button>
-                    <button (click)="demoteHold(waitHold)" class="btn btn-warning"
-                        type="button" ngbPopover="Move to bottom of waitlist" triggers="mouseenter:mouseleave"><i
-                            class="bi bi-arrow-down"></i></button>
-                </div>
-            </td>
+      @for (waitHold of waitHold$ | async; track waitHold) {
+        <tr>
+          <td>{{waitHold.status}}</td>
+          <td>{{waitHold.created | date}}</td>
+          <td>{{waitHold.name}}</td>
+          <td>
+            {{waitHold.email}}
+            <button class="btn btn-light btn-sm" ngxClipboard [cbContent]="waitHold.email"
+              ngbPopover="Copy email to clipboard" triggers="mouseenter:mouseleave">
+              <i class="bi bi-clipboard"></i>
+            </button>
+          </td>
+          <td>{{waitHold.tool}}</td>
+          <td>{{waitHold.notes}}</td>
+          <td [class.text-danger]="waitHold.holdExpiration && waitHold.holdExpiration < today" class="text-danger">
+          {{waitHold.holdExpiration | date}}</td>
+          <td>
+            <a [href]="makeMyTurnInvUrl(waitHold.heldItemId ?? '')"
+            target="_blank" rel="noopener noreferrer">{{waitHold.heldItemId}}</a>
+          </td>
+          <td>
+            <div class="btn-group">
+              @if (waitHold.status == 'Waiting') {
+                <button (click)="startHold(waitHold)" class="btn btn-primary"
+                  type="button" ngbPopover="Start hold" triggers="mouseenter:mouseleave"><i
+                class="bi bi-stopwatch"></i></button>
+              }
+              @if (waitHold.status == 'Holding') {
+                <button (click)="pickupHold(waitHold)" class="btn btn-primary"
+                  type="button" ngbPopover="Picked up" triggers="mouseenter:mouseleave"><i
+                class="bi bi-bag-check"></i></button>
+              }
+              <button [routerLink]="'/edit-wait/' + waitHold.id" class="btn btn-secondary" type="button"
+                ngbPopover="Edit this hold/waitlist entry" triggers="mouseenter:mouseleave"><i
+              class="bi bi-pencil"></i></button>
+              <button (click)="cancelWaitHold(waitHold)" class="btn btn-danger" type="button"
+                ngbPopover="Cancel this hold/waitlist entry" triggers="mouseenter:mouseleave"><i
+              class="bi bi-trash"></i></button>
+              <button (click)="demoteHold(waitHold)" class="btn btn-warning"
+                type="button" ngbPopover="Move to bottom of waitlist" triggers="mouseenter:mouseleave"><i
+              class="bi bi-arrow-down"></i></button>
+            </div>
+          </td>
         </tr>
+      }
     </tbody>
-</table>
-<div *ngIf="(waitHold$ | async)?.length == 0" class="text-center">There are currently no members waiting for this
-    category.</div>
+  </table>
+}
+@if ((waitHold$ | async)?.length == 0) {
+  <div class="text-center">There are currently no members waiting for this
+  category.</div>
+}
 
 <!-- Email Preview Component -->

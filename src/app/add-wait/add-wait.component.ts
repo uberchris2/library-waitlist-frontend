@@ -6,7 +6,7 @@ import { NgbModal, NgbTypeaheadSelectItemEvent, NgbTypeahead, NgbHighlight } fro
 import { WaitHold } from '../wait-hold';
 import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
 import { Member } from '../member';
-import { NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { inject } from '@angular/core';
 
@@ -14,7 +14,7 @@ import { inject } from '@angular/core';
     selector: 'app-add-wait',
     templateUrl: './add-wait.component.html',
     styleUrls: ['./add-wait.component.css'],
-    imports: [FormsModule, NgFor, NgbTypeahead, RouterLink, NgbHighlight, AsyncPipe]
+    imports: [FormsModule, NgbTypeahead, RouterLink, NgbHighlight, AsyncPipe]
 })
 export class AddWaitComponent {
   @ViewChild('memberSearch', { static: true }) memberSearch!: ElementRef;

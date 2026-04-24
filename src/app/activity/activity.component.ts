@@ -6,13 +6,13 @@ import { WaitHold } from '../wait-hold';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RxHelpers } from '../rx-helpers';
 import { HoldHelpers } from '../hold-helpers';
-import { NgFor, NgIf, AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-activity',
     templateUrl: './activity.component.html',
     styleUrls: ['./activity.component.css'],
-    imports: [NgFor, NgIf, NgbPopover, AsyncPipe, DatePipe]
+    imports: [NgbPopover, AsyncPipe, DatePipe]
 })
 export class ActivityComponent {
   waitHoldCollection: CollectionReference;

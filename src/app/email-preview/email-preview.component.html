@@ -1,29 +1,31 @@
 <div class="modal-header">
-    <h5 class="modal-title">{{ title }}</h5>
-    <button type="button" class="btn-close" aria-label="Close" (click)="onCancel()"></button>
+  <h5 class="modal-title">{{ title }}</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="onCancel()"></button>
 </div>
 <div class="modal-body">
-    <form>
-        <div class="mb-3">
-            <label for="emailTo" class="form-label">To:</label>
-            <input type="email" class="form-control" id="emailTo" [(ngModel)]="emailData.to" name="emailTo">
-        </div>
-        <div class="mb-3">
-            <label for="emailSubject" class="form-label">Subject:</label>
-            <input type="text" class="form-control" id="emailSubject" [(ngModel)]="emailData.subject" name="emailSubject">
-        </div>
-        <div class="mb-3">
-            <label for="emailBody" class="form-label">Message:</label>
-            <textarea class="form-control" id="emailBody" rows="8" [(ngModel)]="emailData.body" name="emailBody"></textarea>
-        </div>
-        <div class="mb-3" *ngIf="waitHold && waitHold.status === 'Holding'">
-            <label for="heldItemIdInput" class="form-label">Held inventory #</label>
-            <input type="text" class="form-control" id="heldItemIdInput" name="heldItemIdInput"
-                [(ngModel)]="waitHold.heldItemId" placeholder="e.g. 954425">
-        </div>
-    </form>
+  <form>
+    <div class="mb-3">
+      <label for="emailTo" class="form-label">To:</label>
+      <input type="email" class="form-control" id="emailTo" [(ngModel)]="emailData.to" name="emailTo">
+    </div>
+    <div class="mb-3">
+      <label for="emailSubject" class="form-label">Subject:</label>
+      <input type="text" class="form-control" id="emailSubject" [(ngModel)]="emailData.subject" name="emailSubject">
+    </div>
+    <div class="mb-3">
+      <label for="emailBody" class="form-label">Message:</label>
+      <textarea class="form-control" id="emailBody" rows="8" [(ngModel)]="emailData.body" name="emailBody"></textarea>
+    </div>
+    @if (waitHold && waitHold.status === 'Holding') {
+      <div class="mb-3">
+        <label for="heldItemIdInput" class="form-label">Held inventory #</label>
+        <input type="text" class="form-control" id="heldItemIdInput" name="heldItemIdInput"
+          [(ngModel)]="waitHold.heldItemId" placeholder="e.g. 954425">
+      </div>
+    }
+  </form>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
-    <button type="button" class="btn btn-primary" (click)="onSendEmail()">Send</button>
-</div> 
+  <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+  <button type="button" class="btn btn-primary" (click)="onSendEmail()">Send</button>
+</div>

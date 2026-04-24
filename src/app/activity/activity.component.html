@@ -1,38 +1,42 @@
 <h1>Waitlist activity</h1>
 <p class="mb-3"><em>Last 50 updated entries</em></p>
 <table class="table">
-    <thead>
-        <tr>
-            <th scope="col">Updated</th>
-            <th scope="col">Created</th>
-            <th scope="col">Category</th>
-            <th scope="col">Current Status</th>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Tool</th>
-            <th scope="col">Notes</th>
-            <th scope="col">Hold Expiration</th>
-            <th scope="col">Actions</th>
+  <thead>
+    <tr>
+      <th scope="col">Updated</th>
+      <th scope="col">Created</th>
+      <th scope="col">Category</th>
+      <th scope="col">Current Status</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Tool</th>
+      <th scope="col">Notes</th>
+      <th scope="col">Hold Expiration</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (waitHold of waitHold$ | async; track waitHold) {
+      <tr>
+        <td>{{waitHold.updated | date:'medium'}}</td>
+        <td>{{waitHold.created | date}}</td>
+        <td>{{waitHold.category}}</td>
+        <td>{{waitHold.status}}</td>
+        <td>{{waitHold.name}}</td>
+        <td>{{waitHold.email}}</td>
+        <td>{{waitHold.tool}}</td>
+        <td>{{waitHold.notes}}</td>
+        <td>{{waitHold.holdExpiration | date}}</td>
+        <td>
+          <div class="btn-group">
+            @if (['Cancelled', 'Completed'].includes(waitHold.status)) {
+              <button (click)="revive(waitHold)" class="btn btn-secondary"
+                type="button" ngbPopover="Revive previously closed hold" triggers="mouseenter:mouseleave"><i class="bi bi-heart-pulse"></i></button>
+              }
+            </div>
+          </td>
         </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let waitHold of waitHold$ | async">
-            <td>{{waitHold.updated | date:'medium'}}</td>
-            <td>{{waitHold.created | date}}</td>
-            <td>{{waitHold.category}}</td>
-            <td>{{waitHold.status}}</td>
-            <td>{{waitHold.name}}</td>
-            <td>{{waitHold.email}}</td>
-            <td>{{waitHold.tool}}</td>
-            <td>{{waitHold.notes}}</td>
-            <td>{{waitHold.holdExpiration | date}}</td>
-            <td>
-                <div class="btn-group">
-                    <button *ngIf="['Cancelled', 'Completed'].includes(waitHold.status)" (click)="revive(waitHold)" class="btn btn-secondary"
-                        type="button" ngbPopover="Revive previously closed hold" triggers="mouseenter:mouseleave"><i class="bi bi-heart-pulse"></i></button>
-                </div>
-            </td>
-        </tr>
+      }
 
     </tbody>
-</table>
+  </table>

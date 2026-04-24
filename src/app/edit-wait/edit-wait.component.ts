@@ -6,7 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WaitHold } from '../wait-hold';
 import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
 import { RxHelpers } from '../rx-helpers';
-import { NgIf, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ConfigService } from '../config.service';
 
@@ -14,7 +14,7 @@ import { ConfigService } from '../config.service';
     selector: 'app-edit-wait',
     templateUrl: './edit-wait.component.html',
     styleUrls: ['./edit-wait.component.css'],
-    imports: [FormsModule, NgIf, RouterLink, DatePipe]
+    imports: [FormsModule, RouterLink, DatePipe]
 })
 export class EditWaitComponent {
   public waitHold: WaitHold = {

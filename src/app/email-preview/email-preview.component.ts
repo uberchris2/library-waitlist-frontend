@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { NgIf } from '@angular/common';
+
 import { WaitHold } from '../wait-hold';
 
 export interface EmailData {
@@ -15,7 +15,7 @@ export interface EmailData {
     selector: 'app-email-preview',
     templateUrl: './email-preview.component.html',
     styleUrls: ['./email-preview.component.css'],
-    imports: [FormsModule, NgIf]
+    imports: [FormsModule]
 })
 export class EmailPreviewComponent {
   @Input() emailData: EmailData = {

@@ -8,7 +8,7 @@ import { RxHelpers } from '../rx-helpers';
 import { DateHelpers } from '../date-helpers';
 import { HoldHelpers } from '../hold-helpers';
 import { ClipboardModule } from 'ngx-clipboard';
-import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { EmailService } from '../email.service';
 import { EmailPreviewComponent, EmailData } from '../email-preview/email-preview.component';
 import { ConfigService } from '../config.service';
@@ -17,7 +17,7 @@ import { ConfigService } from '../config.service';
     selector: 'app-category',
     templateUrl: './category.component.html',
     styleUrls: ['./category.component.css'],
-    imports: [RouterLink, NgbPopover, NgIf, NgFor, ClipboardModule, AsyncPipe, DatePipe]
+    imports: [RouterLink, NgbPopover, ClipboardModule, AsyncPipe, DatePipe]
 })
 export class CategoryComponent {
   waitHold$: Observable<WaitHold[]> = EMPTY;

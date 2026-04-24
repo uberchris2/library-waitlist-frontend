@@ -1,51 +1,57 @@
 <h1 class="mb-3">Expired holds</h1>
-<table *ngIf="(expiredHold$ | async)?.length" class="table">
-  <thead>
-    <tr>
-      <th scope="col">Name</th>
-      <th scope="col">Email</th>
-      <th scope="col">Category</th>
-      <th scope="col">Tool</th>
-      <th scope="col">Notes</th>
-      <th scope="col">Hold Started</th>
-      <th scope="col">Hold Expiration</th>
-      <th scope="col"># Waiting</th>
-      <th scope="col">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let expiredHold of expiredHold$ | async">
-      <td>{{expiredHold.name}}</td>
-      <td>
-        {{expiredHold.email}}
-        <button class="btn btn-light btn-sm" ngxClipboard [cbContent]="expiredHold.email"
-          ngbPopover="Copy email to clipboard" triggers="mouseenter:mouseleave">
-          <i class="bi bi-clipboard"></i>
-        </button>
-      </td>
-      <td>{{expiredHold.category}}</td>
-      <td>{{expiredHold.tool}}</td>
-      <td>{{expiredHold.notes}}</td>
-      <td>{{expiredHold.updated | date}}</td>
-      <td>{{expiredHold.holdExpiration | date}}</td>
-      <td>
-        <ng-container *ngIf="waitlistLengthByCategory$ | async as waitlistLengthByCategory">
-          {{waitlistLengthByCategory[expiredHold.category] || 0}}
-        </ng-container>
-      </td>
-      <td>
-        <div class="btn-group">
-          <button (click)="cancelHold(expiredHold, false)" class="btn btn-danger" type="button"
-            ngbPopover="Cancel this hold" triggers="mouseenter:mouseleave"><i class="bi bi-trash"></i></button>
-          <button (click)="cancelHold(expiredHold, true)" class="btn btn-warning" type="button"
-            ngbPopover="Cancel this hold, and view category waitlist" triggers="mouseenter:mouseleave"><i
-              class="bi bi-recycle"></i></button>
-          <button (click)="demoteHold(expiredHold)" class="btn btn-secondary" type="button"
-            ngbPopover="Move to bottom of waitlist" triggers="mouseenter:mouseleave"><i
-              class="bi bi-arrow-down"></i></button>
-        </div>
-      </td>
-    </tr>
-  </tbody>
-</table>
-<div *ngIf="(expiredHold$ | async)?.length == 0" class="text-center">There are currently no expired holds.</div>
+@if ((expiredHold$ | async)?.length) {
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Category</th>
+        <th scope="col">Tool</th>
+        <th scope="col">Notes</th>
+        <th scope="col">Hold Started</th>
+        <th scope="col">Hold Expiration</th>
+        <th scope="col"># Waiting</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (expiredHold of expiredHold$ | async; track expiredHold) {
+        <tr>
+          <td>{{expiredHold.name}}</td>
+          <td>
+            {{expiredHold.email}}
+            <button class="btn btn-light btn-sm" ngxClipboard [cbContent]="expiredHold.email"
+              ngbPopover="Copy email to clipboard" triggers="mouseenter:mouseleave">
+              <i class="bi bi-clipboard"></i>
+            </button>
+          </td>
+          <td>{{expiredHold.category}}</td>
+          <td>{{expiredHold.tool}}</td>
+          <td>{{expiredHold.notes}}</td>
+          <td>{{expiredHold.updated | date}}</td>
+          <td>{{expiredHold.holdExpiration | date}}</td>
+          <td>
+            @if (waitlistLengthByCategory$ | async; as waitlistLengthByCategory) {
+              {{waitlistLengthByCategory[expiredHold.category] || 0}}
+            }
+          </td>
+          <td>
+            <div class="btn-group">
+              <button (click)="cancelHold(expiredHold, false)" class="btn btn-danger" type="button"
+                ngbPopover="Cancel this hold" triggers="mouseenter:mouseleave"><i class="bi bi-trash"></i></button>
+                <button (click)="cancelHold(expiredHold, true)" class="btn btn-warning" type="button"
+                  ngbPopover="Cancel this hold, and view category waitlist" triggers="mouseenter:mouseleave"><i
+                class="bi bi-recycle"></i></button>
+                <button (click)="demoteHold(expiredHold)" class="btn btn-secondary" type="button"
+                  ngbPopover="Move to bottom of waitlist" triggers="mouseenter:mouseleave"><i
+                class="bi bi-arrow-down"></i></button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+  @if ((expiredHold$ | async)?.length == 0) {
+    <div class="text-center">There are currently no expired holds.</div>
+  }

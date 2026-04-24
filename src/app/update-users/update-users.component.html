@@ -1,23 +1,25 @@
 <h1 class="mb-3">Refresh member list</h1>
 <div class="row">
-    <div class="col-lg-6">
-        <p>The list of members (used for searching) can be refreshed here. Note that member refreshes consume a
-            significant
-            quantity of resources and <span class="text-danger">should not be performed more than once per day.</span>
-            To
-            perform a member refresh:</p>
-        <ol>
-            <li>Visit the MyTurn site as an administrator</li>
-            <li>Click Members, then Search/Export</li>
-            <li>Under Fields to Export, uncheck Select All, then select: First Name, Last Name, Email</li>
-            <li>By Export results, select CSV</li>
-            <li>Once the file has downloaded, import it here:</li>
-        </ol>
-        <input type="file" class="form-control mb-3" id="fileInput" name="fileInput" accept=".csv"
-            (change)="handleFileInput($event.target)" />
-        <button (click)="updateMembers()" type="button" class="btn btn-success mb-3"
-            [disabled]="!fileToUpload || progress != 0">Import</button>
-        <ngb-progressbar type="primary" *ngIf="progress != 0" [value]="progress"
-            height="2rem">{{currentState}}</ngb-progressbar>
-    </div>
+  <div class="col-lg-6">
+    <p>The list of members (used for searching) can be refreshed here. Note that member refreshes consume a
+      significant
+      quantity of resources and <span class="text-danger">should not be performed more than once per day.</span>
+      To
+    perform a member refresh:</p>
+    <ol>
+      <li>Visit the MyTurn site as an administrator</li>
+      <li>Click Members, then Search/Export</li>
+      <li>Under Fields to Export, uncheck Select All, then select: First Name, Last Name, Email</li>
+      <li>By Export results, select CSV</li>
+      <li>Once the file has downloaded, import it here:</li>
+    </ol>
+    <input type="file" class="form-control mb-3" id="fileInput" name="fileInput" accept=".csv"
+      (change)="handleFileInput($event.target)" />
+    <button (click)="updateMembers()" type="button" class="btn btn-success mb-3"
+    [disabled]="!fileToUpload || progress != 0">Import</button>
+    @if (progress != 0) {
+      <ngb-progressbar type="primary" [value]="progress"
+      height="2rem">{{currentState}}</ngb-progressbar>
+    }
+  </div>
 </div>

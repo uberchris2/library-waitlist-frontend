@@ -7,13 +7,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RxHelpers } from '../rx-helpers';
 import { HoldHelpers } from '../hold-helpers';
 import { ClipboardModule } from 'ngx-clipboard';
-import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-expired-holds',
     templateUrl: './expired-holds.component.html',
     styleUrls: ['./expired-holds.component.css'],
-    imports: [NgIf, NgFor, ClipboardModule, NgbPopover, AsyncPipe, DatePipe]
+    imports: [ClipboardModule, NgbPopover, AsyncPipe, DatePipe]
 })
 export class ExpiredHoldsComponent {
   expiredHold$: Observable<WaitHold[]>;
