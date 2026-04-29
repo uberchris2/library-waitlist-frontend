@@ -34,6 +34,7 @@ export class ActivityComponent {
     waitHold.status = "Waiting";
     waitHold.created = new Date();
     waitHold.holdExpiration = null;
+    waitHold.heldItemId = null;
     HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold);
     this.router.navigate(['category', waitHold.category]);
   }

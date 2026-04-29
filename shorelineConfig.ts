@@ -18,6 +18,7 @@ const environmentFileContent = `export const environment = {
     headerClass: 'bg-success',
     openDays: [1, 2, 3, 4, 5, 6],
     production: true,
+    myTurnUrl: 'neseattle.myturn.com',
 };
 `;
 

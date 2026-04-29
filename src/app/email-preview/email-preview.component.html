@@ -16,6 +16,11 @@
             <label for="emailBody" class="form-label">Message:</label>
             <textarea class="form-control" id="emailBody" rows="8" [(ngModel)]="emailData.body" name="emailBody"></textarea>
         </div>
+        <div class="mb-3" *ngIf="waitHold && waitHold.status === 'Holding'">
+            <label for="heldItemIdInput" class="form-label">Held inventory #</label>
+            <input type="text" class="form-control" id="heldItemIdInput" name="heldItemIdInput"
+                [(ngModel)]="waitHold.heldItemId" placeholder="e.g. 954425">
+        </div>
     </form>
 </div>
 <div class="modal-footer">

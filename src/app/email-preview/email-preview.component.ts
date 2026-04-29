@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgIf } from '@angular/common';
-import { AuthStatusComponent } from '../auth-status/auth-status.component';
+import { WaitHold } from '../wait-hold';
 
 export interface EmailData {
   to: string;
@@ -16,7 +16,7 @@ export interface EmailData {
   templateUrl: './email-preview.component.html',
   styleUrls: ['./email-preview.component.css'],
   standalone: true,
-  imports: [FormsModule]
+  imports: [FormsModule, NgIf]
 })
 export class EmailPreviewComponent {
   @Input() emailData: EmailData = {
@@ -27,6 +27,7 @@ export class EmailPreviewComponent {
   
   @Input() title: string = 'Preview Email';
   @Input() showFromField: boolean = false;
+  @Input() waitHold?: WaitHold;
   
   @Output() sendEmail = new EventEmitter<EmailData>();
   @Output() cancel = new EventEmitter<void>();

@@ -9,4 +9,5 @@ export interface WaitHold {
   tool: string;
   notes?: string;
   holdExpiration: Date | null;
+  heldItemId?: string | null;
 }

@@ -17,6 +17,7 @@ const environmentFileContent = `export const environment = {
     headerClass: 'bg-primary',
     openDays: [0, 2, 4, 6],
     production: true,
+    myTurnUrl: 'neseattle.myturn.com',
 };
 `;
 

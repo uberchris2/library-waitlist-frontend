@@ -8,6 +8,7 @@ import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
 import { RxHelpers } from '../rx-helpers';
 import { NgIf, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ConfigService } from '../config.service';
 
 @Component({
     selector: 'app-edit-wait',
@@ -27,7 +28,8 @@ export class EditWaitComponent {
     holdExpiration: null,
     name: "",
     tool: "",
-    notes: ""
+    notes: "",
+    heldItemId: null
   };
 
   category$: Observable<Category[]>;
@@ -35,7 +37,13 @@ export class EditWaitComponent {
   waitHoldsCollection: CollectionReference;
   subscriptions: Subscription[] = [];
 
-  constructor(private firestore: Firestore, private modalService: NgbModal, private router: Router, private route: ActivatedRoute) {
+  constructor(
+    private firestore: Firestore,
+    private modalService: NgbModal,
+    private router: Router,
+    private route: ActivatedRoute,
+    public configService: ConfigService
+  ) {
     this.categoriesCollection = collection(firestore, 'categories');
     this.waitHoldsCollection = collection(firestore, 'wait-holds');
     this.category$ = collectionData(this.categoriesCollection, { idField: 'id' }) as Observable<Category[]>;

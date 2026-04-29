@@ -49,6 +49,7 @@ export class ExpiredHoldsComponent {
 
   cancelHold(waitHold: WaitHold, routeAfterward: boolean) {
     waitHold.status = "Cancelled";
+    waitHold.heldItemId = null;
     HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold).then(() => {
       if (routeAfterward) {
         this.router.navigate(['category', waitHold.category]);
@@ -60,6 +61,7 @@ export class ExpiredHoldsComponent {
     waitHold.status = "Waiting";
     waitHold.created = new Date();
     waitHold.holdExpiration = null;
+    waitHold.heldItemId = null;
     HoldHelpers.updateWaitHold(this.waitHoldCollection, this.categoriesCollection, waitHold);
   }
 }

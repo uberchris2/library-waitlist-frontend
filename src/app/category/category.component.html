@@ -19,6 +19,7 @@
             <th scope="col">Tool</th>
             <th scope="col">Notes</th>
             <th scope="col">Hold Expiration</th>
+            <th scope="col">Item Number</th>
             <th scope="col">Actions</th>
         </tr>
     </thead>
@@ -38,6 +39,10 @@
             <td>{{waitHold.notes}}</td>
             <td [class.text-danger]="waitHold.holdExpiration && waitHold.holdExpiration < today" class="text-danger">
                 {{waitHold.holdExpiration | date}}</td>
+            <td>
+                <a [href]="makeMyTurnInvUrl(waitHold.heldItemId ?? '')"
+                    target="_blank" rel="noopener noreferrer">{{waitHold.heldItemId}}</a>
+            </td>
             <td>
                 <div class="btn-group">
                     <button *ngIf="waitHold.status == 'Waiting'" (click)="startHold(waitHold)" class="btn btn-primary"
