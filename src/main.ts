@@ -1,7 +1,7 @@
 /// <reference types="@angular/localize" />
 
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { importProvidersFrom } from '@angular/core';
+import { importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { AppComponent } from './app/app.component';
 import { ClipboardModule } from 'ngx-clipboard';
 import { NgxCsvParserModule } from 'ngx-csv-parser';
@@ -17,7 +17,7 @@ import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 
 bootstrapApplication(AppComponent, {
     providers: [
-        importProvidersFrom(
+        provideZoneChangeDetection(),importProvidersFrom(
             BrowserModule,
             AppRoutingModule,
             NgbModule,
